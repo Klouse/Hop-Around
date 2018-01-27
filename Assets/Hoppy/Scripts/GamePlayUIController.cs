@@ -28,8 +28,6 @@ public class GamePlayUIController : MonoBehaviour {
 	public GameObject gameMenu;
 	// Game Over Menu - Shown after the game is over.
 	public GameObject gameOverMenu;
-	// Prize Menu - Shown while granting a prize.
-	public GameObject prizeMenu;
 
 	// Current Score UI Texts (On Game menu and Game Over menu).
 	public Text[] scoreTexts;
@@ -45,27 +43,18 @@ public class GamePlayUIController : MonoBehaviour {
 	// A reference to Number of Remaining Gems UI Text.
 	public Text numberOfRemainingGemsText;
 
-
-	// A reference to new Granted Gems UI Image (On Prize menu).
-	public Image newGemsImage;
-	// A reference to new Granted Gems UI Text (On Prize menu).
-	public Text newGemsText;
-	// A reference to new Granted Model UI Text (On Prize menu).
-	public Text newBallText;
-
 	#endregion
 
 
 
 	#region Unity Callbacks
-		
+
 	void Start ()
 	{
 		// Activate the Start menu Only and deactivate the others.
 		startMenu.SetActive (true);
 		gameMenu.SetActive (false);
 		gameOverMenu.SetActive (false);
-		prizeMenu.SetActive (false);
 
 
 		// Update Best Score Texts.
@@ -88,7 +77,6 @@ public class GamePlayUIController : MonoBehaviour {
 		startMenu.SetActive (false);
 		gameMenu.SetActive (true);
 		gameOverMenu.SetActive (false);
-		prizeMenu.SetActive (false);
 
 		// Increment the number of Games Played.
 		int gamesPlayed = PlayerPrefs.GetInt ("GamesPlayed");
@@ -110,12 +98,11 @@ public class GamePlayUIController : MonoBehaviour {
 			updateBestScoreUITexts (bestScore);
 		}
 
-		
+
 		// Activate the Game Over menu Only and deactivate the others.
 		startMenu.SetActive (false);
 		gameMenu.SetActive (false);
 		gameOverMenu.SetActive (true);
-		prizeMenu.SetActive (false);
 
 		// Check Game Over Panels Status.
 		checkGameOverPanelsStatus ();
@@ -161,7 +148,7 @@ public class GamePlayUIController : MonoBehaviour {
 		numberOfRemainingGemsText.text = numberOfGems + "/200";
 	}
 
-	
+
 
 	#endregion
 
@@ -187,7 +174,7 @@ public class GamePlayUIController : MonoBehaviour {
 		{
 			// Add a step in X position each frame.
 			animatingPanel.anchoredPosition = new Vector3 (animatingPanel.anchoredPosition.x + xPosStep, animatingPanel.anchoredPosition.y, 0);
-	
+
 			if (animatingPanel.anchoredPosition.x >= targetPosition.x)
 			{
 				// Target is Reached or exceeded.
@@ -221,68 +208,9 @@ public class GamePlayUIController : MonoBehaviour {
 		// Load Models Shop Scene.
 	}
 
-	public void onLeaderboardButtonClicked ()
-	{
-		// Show Leaderboard.
-	}
-
-	public void onRestartButtonClicked ()
+	public void onSubmitButtonClicked ()
 	{
 		SceneManager.LoadScene ("GamePlay");
-	}
-
-	public void onShareButtonClicked ()
-	{
-		// Share Progress With Customized Text and Screen Shot.
-	}
-
-	public void onRateUsButtonClicked ()
-	{
-		// Open Rate Page on Google Play and App Store.
-		// Change Current Links with Your Game's Links.
-		#if UNITY_ANDROID
-		Application.OpenURL ("market://details?id=games.fa.rollingcolor"); 
-		#elif UNITY_IPHONE
-		Application.OpenURL ("itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=1146256287&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software");
-		#endif
-	}
-
-	public void onPromotionButtonClicked ()
-	{
-		// Open the url of the Game or Application you want to promote for both Android and iOS.
-		// Change Current Links with Your Game's Links.
-		#if UNITY_ANDROID
-		Application.OpenURL ("market://details?id=games.fa.rollingcolor"); 
-		#elif UNITY_IPHONE
-		Application.OpenURL ("https://itunes.apple.com/app/id1146256287");
-		#endif
-	}
-
-	public void onRewardedVideoButtonClicked ()
-	{
-		// Show Rewarded Video if loaded.
-	}
-
-	public void onFreeGiftButtonClicked ()
-	{
-		// Reward the player with a free gift.
-	}
-
-	public void onNewModelButtonClicked ()
-	{
-		// Unlock a new model for the player.
-	}
-
-	public void onPrizeDoneButtonClicked ()
-	{
-		// Check Game Over Panels Status.
-		checkGameOverPanelsStatus ();
-
-		// Activate the Game Over menu Only and deactivate the others.
-		startMenu.SetActive (false);
-		gameMenu.SetActive (false);
-		gameOverMenu.SetActive (true);
-		prizeMenu.SetActive (false);
 	}
 
 	#endregion
@@ -308,11 +236,8 @@ public class GamePlayUIController : MonoBehaviour {
 		if (numberOfGems >= 200)
 			newModelAvailable = true;
 
-		noEnoughGems.SetActive(!newModelAvailable);
-		EnoughGems.SetActive(newModelAvailable);
-
         // Update New Model Panel Status.
-        
+
 		// TODO: Check whether there is new model to unlock or not.
 		bool thereIsABall = true;
         gameOverPanels [2].gameObject.SetActive (thereIsABall);

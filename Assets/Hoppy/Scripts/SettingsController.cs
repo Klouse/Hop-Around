@@ -13,7 +13,6 @@ public class SettingsController : MonoBehaviour {
 	#region Variables Declaration
 
 	public Button soundButton;                     // A reference to the Sound Button to change its sprites programatically.
-	public Button restorePurchasesButton;          // A reference to the Restore Purchases Button to deactivate it for Android.
 
 	public Sprite soundOnUnPressed;                // A reference to the Sound Button Sprite if sound is on and button is unpressed.
 	public Sprite soundOnPressed;                  // A reference to the Sound Button Sprite if sound is on and button is pressed.
@@ -30,12 +29,6 @@ public class SettingsController : MonoBehaviour {
 
 	void Awake ()
 	{
-
-		// Deactivate Restore Purchases Button for Android.
-		// All non-consumable In App Purchases are automatically restored by Google.
-		#if UNITY_ANDROID
-		restorePurchasesButton.gameObject.SetActive (false);
-		#endif
 
 		// Check sound status and change Sound Button sprites accordingly.
 		string sound = PlayerPrefs.GetString("sound");
@@ -82,34 +75,10 @@ public class SettingsController : MonoBehaviour {
 		{
 			// If sound was previously on:
 			// Then turn the sound off and change Sound Button sprites.
-			
+
 			changeButtonSprites (soundButton, soundOffUnPressed, soundOffPressed);
 			PlayerPrefs.SetString("sound","Off");
 		}
-	}
-
-	public void onRemoveAdsButtonClicked ()
-	{
-		// Buy the Remove Ads product.
-	}
-
-	public void onRestorePurchasesButtonClicked ()
-	{
-		// Restore non-consumable purchases previously made by this player for iOS only.
-		#if UNITY_IPHONE
-
-		#endif
-	}
-
-	public void onPromotionButtonClicked ()
-	{
-		// Open the url of the Game or Application you want to promote for both Android and iOS.
-		// Change Current Links with Your Game's Links.
-		#if UNITY_ANDROID
-		Application.OpenURL ("market://details?id=games.fa.rollingcolor"); 
-		#elif UNITY_IPHONE
-		Application.OpenURL ("https://itunes.apple.com/app/id1146256287");
-		#endif
 	}
 
 	#endregion
