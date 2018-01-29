@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour {
     public GameObject gemsExplosion;
 
 	// Ball sliding speed in X Axis.
-    private float slidingSpeed = 0.03f;
+    public float slidingSpeed;
 	// The magnitude of the limit of Player X position.
 	private float xPosLimit = 5f;
 	// Jump distance in Z Axis.
@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour {
 	void Start ()
 	{
 		// Turn off gravity until the Player starts to play.
-		Physics.gravity = new Vector3(0, 0, 0);		
+		Physics.gravity = new Vector3(0, 0, 0);
 	}
 
 	void Update ()
@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour {
 			GetComponent<Rigidbody>().velocity = Vector3.zero;
 
 			// Increase the gravity.
-			Physics.gravity = new Vector3(0, maxGravity -50.0f, 0);
+			Physics.gravity = new Vector3(0, maxGravity-1100.0f, 0);
 
 
 			// Update UI and gameOver boolean.
@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour {
 			{
 				// Control Sliding using Keyboard right and left arrow buttons.
 				float moveHorizontal = Input.GetAxis ("Horizontal");
-				transform.Translate(moveHorizontal * slidingSpeed * 7, 0, 0);
+				transform.Translate(moveHorizontal * slidingSpeed * 14, 0, 0);
 			}
 
 			// Clamp the Player's X position between - xPosLimit and xPosLimit.

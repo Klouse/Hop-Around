@@ -30,7 +30,7 @@ public class CubeController : MonoBehaviour {
 	// Array of the colors for the cubes.
 	public Color[] colorsOfTheCube;
 
-	// Speed for moving the cube horizontally. 
+	// Speed for moving the cube horizontally.
 	public float horizontalSpeed;
 	// Speed for sliding the cube from up to down.
 	public float slidingSpeed;
@@ -69,7 +69,7 @@ public class CubeController : MonoBehaviour {
 		// Intialize the color list.
 		colorsList = new List<Color>(colorsOfTheCube.Length);
 
-		// Create an array of cubes and assign the first cube in the array.      
+		// Create an array of cubes and assign the first cube in the array.
 		instantiatedCubes = new GameObject[numberOfInstantiatedCubes+1];
 		instantiatedCubes[0] = cube;
 
@@ -85,7 +85,7 @@ public class CubeController : MonoBehaviour {
 			instantiatedGems.SetActive(false);
 			instantiatedGems.name = "Gem";
 			queueOfGems.Enqueue(instantiatedGems);
-		}                
+		}
 	}
 
 	void LateUpdate()
@@ -106,7 +106,7 @@ public class CubeController : MonoBehaviour {
 	{
 		for (int i = 0; i < numberOfInstantiatedCubes; i++)
 		{
-			// Choose a random x position from the pre-determined x Positions. 
+			// Choose a random x position from the pre-determined x Positions.
 			int randomSelectionForXPosition = UnityEngine.Random.Range(0, xPositions.Length);
 			int currentXPosition = xPositions[randomSelectionForXPosition];
 
@@ -126,7 +126,7 @@ public class CubeController : MonoBehaviour {
 			// create a cube and place it in the pre-determined position.
 			GameObject instantiatedCube = Instantiate(cube, place, Quaternion.identity) as GameObject;
 
-			// Change the name of the cube in the hierarchy. 
+			// Change the name of the cube in the hierarchy.
 			instantiatedCube.name = "Cube";
 			// Set the Default current color to the cube.
 			instantiatedCube.GetComponentInChildren<Renderer>().material.color = currentColor;
@@ -151,7 +151,7 @@ public class CubeController : MonoBehaviour {
 
 
 
-	#region Spawn cubes and gems, and move them from up to down and horizontally 
+	#region Spawn cubes and gems, and move them from up to down and horizontally
 
 	public void spawnCubes ()
 	{
@@ -170,12 +170,14 @@ public class CubeController : MonoBehaviour {
 
 
 		// Adjust  the position for the cubes that will be spawned.
-		actualZPosition = actualZPosition + lengthOfTheCubes; 
+		// Skillz Random
+		actualZPosition = actualZPosition + lengthOfTheCubes;
 		int randomSelectionForXPosition = UnityEngine.Random.Range(0, xPositions.Length);
 		int currentXPosition = xPositions[randomSelectionForXPosition];
 		float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
 		Vector3 place = new Vector3
 			(actualXPosition,
+			// height of cubes hard coded
 				5.0f,
 				actualZPosition
 			);
@@ -183,10 +185,11 @@ public class CubeController : MonoBehaviour {
 		// Dequeue a cube from the queue to be used and set a color to the cube and put it in a certain position.
 		GameObject instantiatedCube = queueOfCubes.Dequeue();
 		instantiatedCube.transform.position = place;
-		instantiatedCube.GetComponent<Renderer>().material.color = currentColor;
+		instantiatedCube.GetComponent<Renderer>().material.color = currentColor; // currentColor comes from changeColor()
 		instantiatedCube.SetActive(true);
 
 		// Check if the gem will be spawned or not.
+		// Skillz Random
 		int randomNumberToSpawnGems = UnityEngine.Random.Range(0,11);
 		if (randomNumberToSpawnGems >= 10)
 		{
@@ -199,7 +202,7 @@ public class CubeController : MonoBehaviour {
 			StartCoroutine(slidingDownTheCubes(instantiatedCube, gem));
 		}
 
-		if (!gemInstantiated) 
+		if (!gemInstantiated)
 			// Call a coroutine which is responsible for moving the cube from up to down.
 			StartCoroutine(slidingDownTheCubes(instantiatedCube,null));
 	}
@@ -344,10 +347,11 @@ public class CubeController : MonoBehaviour {
 		// choosing the new color
 		do
 		{
+			// Skillz Random
 			int selectRandomColor = UnityEngine.Random.Range(0, colorsList.Count);
 			randomColor = colorsList[selectRandomColor];
 		} while (randomColor == currentColor);
-		currentColor = randomColor; 
+		currentColor = randomColor;
 
 		// Changing the color of the cubes.
 		foreach(GameObject cube in instantiatedCubes)
@@ -382,7 +386,7 @@ public class CubeController : MonoBehaviour {
 			other.gameObject.transform.position = new Vector3(0, 0, 0);
 			// Enqueue this cube to the cubes' queue.
 			queueOfCubes.Enqueue(other.gameObject);
-			// Disable the child of the cube to. 
+			// Disable the child of the cube to.
 			other.gameObject.transform.GetChild(0).gameObject.SetActive(false);
 			// Disable the cube game object.
 			other.gameObject.SetActive(false);

@@ -21,6 +21,8 @@ public class SplashController : MonoBehaviour {
 
 	void Start ()
 	{
+		// Super Janky?
+		// might need to check this one out
 		// Try different values for both Android and iOS and choose the best.
 		#if UNITY_ANDROID
 		setTime = 3;
@@ -30,7 +32,7 @@ public class SplashController : MonoBehaviour {
 
 		checkLanucheStatus ();
 	}
-		
+
 	void Update ()
 	{
 		// Increasing timer until it is greater than or equal to the setTime.
@@ -43,7 +45,7 @@ public class SplashController : MonoBehaviour {
 
 
 	#region Supporting Methods
-    
+
 	void checkLanucheStatus()
 	{
 		string hasLauncedBefore = PlayerPrefs.GetString("HasLauncedBefore");
