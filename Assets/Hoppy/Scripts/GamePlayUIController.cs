@@ -103,15 +103,6 @@ public class GamePlayUIController : MonoBehaviour {
 		startMenu.SetActive (false);
 		gameMenu.SetActive (false);
 		gameOverMenu.SetActive (true);
-
-		// Check Game Over Panels Status.
-		checkGameOverPanelsStatus ();
-
-		// Animate all Game Over Panels.
-		for (int i = 0; i< gameOverPanels.Length; i++)
-		{
-			StartCoroutine (animatePanel(gameOverPanels[i]));
-		}
 	}
 
 	#endregion
@@ -143,9 +134,6 @@ public class GamePlayUIController : MonoBehaviour {
 		// Update Number of Gems displayed.
 		int numberOfGems = PlayerPrefs.GetInt ("NumberOfPickUps");
 		numberOfGemsText.text = "" + numberOfGems;
-
-		// Update Number of Remaining Gems for New Model.
-		numberOfRemainingGemsText.text = numberOfGems + "/200";
 	}
 
 
@@ -211,62 +199,6 @@ public class GamePlayUIController : MonoBehaviour {
 	public void onSubmitButtonClicked ()
 	{
 		SceneManager.LoadScene ("GamePlay");
-	}
-
-	#endregion
-
-
-
-	#region Updating Game Over panels status
-
-	void checkGameOverPanelsStatus()
-	{
-        // Update Rewarded Video Panel Status.
-
-		// TODO: Check whether the rewarded video is loaded or not.
-		bool videoIsLoaded = true;
-        gameOverPanels [0].gameObject.SetActive (videoIsLoaded);
-
-		// Update Free Gift Panel Status.
-		gameOverPanels [1].gameObject.SetActive (true);
-
-		// Check whether there is enough gems to unlock a new Model or not.
-		bool newModelAvailable = false;
-		int numberOfGems = PlayerPrefs.GetInt ("NumberOfPickUps");
-		if (numberOfGems >= 200)
-			newModelAvailable = true;
-
-        // Update New Model Panel Status.
-
-		// TODO: Check whether there is new model to unlock or not.
-		bool thereIsABall = true;
-        gameOverPanels [2].gameObject.SetActive (thereIsABall);
-
-
-		// Rate Us Panel & Promotion Panel
-		int gamesPlayed = PlayerPrefs.GetInt ("GamesPlayed");
-		if (gamesPlayed % 14 == 0)
-		{
-			// Show Rate Us Panel each 14 Games Played and deactivate other Panels.
-			gameOverPanels [0].gameObject.SetActive (false);
-			gameOverPanels [1].gameObject.SetActive (false);
-			gameOverPanels [2].gameObject.SetActive (false);
-
-			// Rate Us Panel
-			gameOverPanels [3].gameObject.SetActive (true);
-			gameOverPanels [4].gameObject.SetActive (false);
-		}
-		else if (gamesPlayed % 5 == 0)
-		{
-			// Show Promotion Panel each 5 Games Played and deactivate other Panels.
-			gameOverPanels [0].gameObject.SetActive (false);
-			gameOverPanels [1].gameObject.SetActive (false);
-			gameOverPanels [2].gameObject.SetActive (false);
-
-			// Promotion Panel
-			gameOverPanels [3].gameObject.SetActive (false);
-			gameOverPanels [4].gameObject.SetActive (true);
-		}
 	}
 
 	#endregion

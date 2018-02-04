@@ -21,6 +21,8 @@ public class SettingsController : MonoBehaviour {
 
 	public Text numberOfGemsText;                  // A reference to Number of Gems UI Text.
 
+	public bool darkMode = false;
+
 	#endregion
 
 
@@ -78,6 +80,20 @@ public class SettingsController : MonoBehaviour {
 
 			changeButtonSprites (soundButton, soundOffUnPressed, soundOffPressed);
 			PlayerPrefs.SetString("sound","Off");
+		}
+	}
+
+	public void onDarkModeClick ()
+	{
+		if (isDark == true)
+		{
+			isDark = false;
+			// turn light mode back on
+		}
+		else
+		{
+			isDark = true;
+			// turn dark mode on
 		}
 	}
 
