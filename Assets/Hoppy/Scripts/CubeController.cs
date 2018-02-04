@@ -43,6 +43,8 @@ public class CubeController : MonoBehaviour {
 	public int lengthOfTheCubes;
 	// Intialize the z-axis point for the first cube.
 	float actualZPosition = 0.0f;
+	// Initialize the row counter
+	int row = 0;
 	// List of the colors.
 	private List<Color> colorsList;
 	// Intialize the counter that is used to change the color of the cubes.
@@ -104,14 +106,18 @@ public class CubeController : MonoBehaviour {
 
 	IEnumerator OnStart()
 	{
+		int positionIncrement = 0;
 		for (int i = 0; i < numberOfInstantiatedCubes; i++)
 		{
-			// Choose a random x position from the pre-determined x Positions.
-			int randomSelectionForXPosition = UnityEngine.Random.Range(0, xPositions.Length);
-			int currentXPosition = xPositions[randomSelectionForXPosition];
+			// For the first set of cubes, spawn in rows of three
+			// Choose a x position from the pre-determined x Positions.
+			int currentXPosition = xPositions[positionIncrement];
 
 			// Add a margin to the choosen position.
-			float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
+			//float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
+
+			// Ignore margin to the choosen position.
+			float actualXPosition = currentXPosition;
 
 			// intialize y value of the cube.
 			float yPosition = (((i + 1f) * numberOfInstantiatedCubes) / numberOfInstantiatedCubes);
@@ -127,14 +133,28 @@ public class CubeController : MonoBehaviour {
 			GameObject instantiatedCube = Instantiate(cube, place, Quaternion.identity) as GameObject;
 
 			// Change the name of the cube in the hierarchy.
-			instantiatedCube.name = "Cube";
+			if (positionIncrement == 2)
+			{
+				instantiatedCube.name = "Cube";
+			}else{
+				instantiatedCube.name = "pCube";
+			}
 			// Set the Default current color to the cube.
 			instantiatedCube.GetComponentInChildren<Renderer>().material.color = currentColor;
 
 			// Access the next element in the array.
 			instantiatedCubes[i + 1] = instantiatedCube;
-			// Calculate the position of the next cube in Z axis.
-			actualZPosition = actualZPosition + lengthOfTheCubes;
+
+			// increment specific row and postion numbers
+			if (positionIncrement < 2) {
+				positionIncrement++;
+			}else{
+				// Reset positionIncrement and increment row
+				positionIncrement = 0;
+				row++;
+				// Calculate the position of the next row of cubes in Z axis.
+				actualZPosition = actualZPosition + lengthOfTheCubes;
+			}
 		}
 
 		yield return new WaitForSecondsRealtime(0.1f);
@@ -201,6 +221,9 @@ public class CubeController : MonoBehaviour {
 			// Call a coroutine which is responsible for moving the cube and the gem from up to down.
 			StartCoroutine(slidingDownTheCubes(instantiatedCube, gem));
 		}
+
+ 		// Increment row counter
+		row++;
 
 		if (!gemInstantiated)
 			// Call a coroutine which is responsible for moving the cube from up to down.
@@ -274,8 +297,9 @@ public class CubeController : MonoBehaviour {
 			);
 
 			// Check if this cube will be moved horizontally or not.
+			// Skillz Random
 			randomForMovingTheCubeInXaxis = UnityEngine.Random.Range(0, 9);
-			if (randomForMovingTheCubeInXaxis >= 8)
+			if (randomForMovingTheCubeInXaxis >= 8 & row > 5)
 				StartCoroutine(moveCube(instantiatedCube, null, instantiatedCube.transform.position.x, instantiatedCube.transform.position.z));
 		}
 	}
@@ -385,12 +409,14 @@ public class CubeController : MonoBehaviour {
 			// Reset the position of the cube.
 			other.gameObject.transform.position = new Vector3(0, 0, 0);
 			// Enqueue this cube to the cubes' queue.
+			if (other.gameObject.name == "Cube")
 			queueOfCubes.Enqueue(other.gameObject);
 			// Disable the child of the cube to.
 			other.gameObject.transform.GetChild(0).gameObject.SetActive(false);
 			// Disable the cube game object.
 			other.gameObject.SetActive(false);
 			// Call "spawnCubes" function to spawn a new cube.
+			if (other.gameObject.name == "Cube")
 			spawnCubes();
 		}
 	}

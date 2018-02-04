@@ -756,7 +756,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gemsExplosion: {fileID: 1000012160138410, guid: 98576b417133d418bb0e29ac07791c03,
     type: 2}
-  slidingSpeed: 0.015
+  slidingSpeed: 0.007
   uiController: {fileID: 1530382542}
 --- !u!54 &838441955
 Rigidbody:
@@ -1295,9 +1295,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cube: {fileID: 495741524}
-  numberOfInstantiatedCubes: 5
+  numberOfInstantiatedCubes: 15
   gems: {fileID: 1000014208981860, guid: 145a5acfddba747b19e0a696f91a11a4, type: 2}
-  currentColor: {r: 0.09803922, g: 0.9411765, b: 0.38431373, a: 1}
+  currentColor: {r: 0.098039225, g: 0.94117653, b: 0.38431376, a: 1}
   colorsOfTheCube:
   - {r: 1, g: 0.09019608, b: 0.16862746, a: 1}
   - {r: 0.09803922, g: 0.9411765, b: 0.38431373, a: 1}
