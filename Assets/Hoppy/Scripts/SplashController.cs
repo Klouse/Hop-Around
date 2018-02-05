@@ -69,6 +69,8 @@ public class SplashController : MonoBehaviour {
 			PlayerPrefs.SetInt("Best Score", 0);
 			// An integer shows how many pick ups the player has.
 			PlayerPrefs.SetInt("NumberOfPickUps", 0);
+			// Dark mode toggle -- starts off
+			PlayerPrefs.SetString("dark", "Off");
 		}
 		else
 		{
