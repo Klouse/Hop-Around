@@ -500,7 +500,29 @@ MonoBehaviour:
   soundOnPressed: {fileID: 21300000, guid: 6ca83a714eb104ac4b954f65bbaba46a, type: 3}
   soundOffUnPressed: {fileID: 21300000, guid: ffea3fd2c11044cfaaab8e297dd99353, type: 3}
   soundOffPressed: {fileID: 21300000, guid: 32620e476b62c45b5a5b92b3d1f41a14, type: 3}
+  soundOnDarkUnPressed: {fileID: 21300000, guid: 18ed6e0229d5748499fe4ebe8e416a3a,
+    type: 3}
+  soundOnDarkPressed: {fileID: 21300000, guid: 29fd8acdb8f04e24499320b5e92370ef, type: 3}
+  soundOffDarkUnPressed: {fileID: 21300000, guid: 0cc6545b293fa9345b5f08f822e08615,
+    type: 3}
+  soundOffDarkPressed: {fileID: 21300000, guid: b28d17c2a845aad43a25c7aca4bf329f,
+    type: 3}
   numberOfGemsText: {fileID: 1443866442}
+  backButton: {fileID: 298640769}
+  backUnPressed: {fileID: 21300000, guid: 3fef25076e13a45fba4b45cd6951c364, type: 3}
+  backPressed: {fileID: 21300000, guid: 2e4db1ab09a7f4f34add291dfab52ea8, type: 3}
+  backDarkUnPressed: {fileID: 21300000, guid: 1411ab03d7b90894b9577f3868ffe2c0, type: 3}
+  backDarkPressed: {fileID: 21300000, guid: 305236e14d32f7744bb2af71a7a65fc3, type: 3}
+  ballButton: {fileID: 1410213352}
+  ballUnPressed: {fileID: 21300000, guid: b1c4f0d3bd780459bab05396ee222019, type: 3}
+  ballPressed: {fileID: 21300000, guid: 2f3e7a4dd34404b518d70c288ef1f4ad, type: 3}
+  ballDarkUnPressed: {fileID: 21300000, guid: ebc14075bcc66344784e4cbd36fa20d5, type: 3}
+  ballDarkPressed: {fileID: 21300000, guid: a95dca8f43911ca4ca8658a483e30792, type: 3}
+  darkModeButton: {fileID: 2016408623}
+  moonUnPressed: {fileID: 21300000, guid: 0d905ff50aff6ba4d9dd1972760e2264, type: 3}
+  moonPressed: {fileID: 21300000, guid: b5eefa795f8ac8a4ab655650316b652f, type: 3}
+  sunUnPressed: {fileID: 21300000, guid: e35f48d8337b29c4895eefaa7823c7f3, type: 3}
+  sunPressed: {fileID: 21300000, guid: f14c88d76dad4be4ba2756b5147cbc87, type: 3}
 --- !u!4 &844445553
 Transform:
   m_ObjectHideFlags: 0
