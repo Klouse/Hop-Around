@@ -55,6 +55,7 @@ public class SettingsController : MonoBehaviour {
 		// Check sound status and change Sound Button sprites accordingly.
 		string sound = PlayerPrefs.GetString("sound");
 		string darkMode = PlayerPrefs.GetString("dark");
+		Debug.Log(darkMode);
 		if (sound == "On")
 		{
 			if (darkMode == "Off")
@@ -121,11 +122,29 @@ public class SettingsController : MonoBehaviour {
 		{
 			// turn light mode back on
 			PlayerPrefs.SetString("dark", "Off");
+			darkMode = PlayerPrefs.GetString("dark");
+			Debug.Log(darkMode);
+			if(sound == "On")
+			{
+				changeButtonSprites(soundButton, soundOnUnPressed, soundOnPressed);
+			}
+			else
+			{
+				// sound is off
+				changeButtonSprites(soundButton, soundOffUnPressed, soundOffPressed);
+			}
+			// change the rest of the buttons on screen
+			changeButtonSprites(backButton, backUnPressed, backPressed);
+			changeButtonSprites(ballButton, ballUnPressed, backPressed);
+			// change to sun
+			changeButtonSprites(darkModeButton, moonUnPressed, moonPressed);
 		}
 		else
 		{
 			// turn dark mode on
 			PlayerPrefs.SetString("dark", "On");
+			darkMode = PlayerPrefs.GetString("dark");
+			Debug.Log(darkMode);
 			if(sound == "On")
 			{
 				changeButtonSprites(soundButton, soundOnDarkUnPressed, soundOnDarkPressed);
@@ -137,6 +156,9 @@ public class SettingsController : MonoBehaviour {
 			}
 			// change the rest of the buttons on screen
 			changeButtonSprites(backButton, backDarkUnPressed, backDarkPressed);
+			changeButtonSprites(ballButton, ballDarkUnPressed, backDarkPressed);
+			// change to sun
+			changeButtonSprites(darkModeButton, sunUnPressed, sunPressed);
 		}
 	}
 
