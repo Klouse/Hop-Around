@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour {
 			GetComponent<Rigidbody>().velocity = Vector3.zero;
 
 			// Increase the gravity.
-			Physics.gravity = new Vector3(0, maxGravity-1100.0f, 0);
+			Physics.gravity = new Vector3(0, maxGravity-900.0f, 0);
 
 
 			// Update UI and gameOver boolean.
