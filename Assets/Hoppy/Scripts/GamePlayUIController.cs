@@ -33,6 +33,8 @@ public class GamePlayUIController : MonoBehaviour {
 	public Text[] scoreTexts;
 	// Best Score UI Texts (On Starting menu and Game Over menu).
 	public Text[] bestScoreTexts;
+	// Game Name UI Text
+	public Text gameNameText;
 
 	// A reference to all game over panels (Rewarded Video, Free Gifts, New Model, Rate Us and Promotion).
 	public RectTransform[] gameOverPanels;
@@ -43,13 +45,32 @@ public class GamePlayUIController : MonoBehaviour {
 	// A reference to Number of Remaining Gems UI Text.
 	public Text numberOfRemainingGemsText;
 
+	public Button settingsButton;
+	public Sprite settingsUnPressed;
+	public Sprite settingsPressed;
+	public Sprite settingsDarkUnPressed;
+	public Sprite settingsDarkPressed;
+
+	public Image handImage;
+	public Sprite handSprite;
+	public Sprite handDarkSprite;
+
+	public Button submitButton;
+	public Sprite submitUnPressed;
+	public Sprite submitPressed;
+	public Sprite submitDarkUnPressed;
+	public Sprite submitDarkPressed;
+
+	public Camera camera;  // used for background colors
+	public Color [] colors;
+
 	#endregion
 
 
 
 	#region Unity Callbacks
 
-	void Start ()
+	void Awake ()
 	{
 		// Activate the Start menu Only and deactivate the others.
 		startMenu.SetActive (true);
@@ -63,6 +84,9 @@ public class GamePlayUIController : MonoBehaviour {
 
 		// Update Number of Gems displayed.
 		updateNumberOfGemsUITexts ();
+
+		// Update colors for dark Model
+		updateDarkMode();
 	}
 
 	#endregion
@@ -135,6 +159,62 @@ public class GamePlayUIController : MonoBehaviour {
 		int numberOfGems = PlayerPrefs.GetInt ("NumberOfPickUps");
 		numberOfGemsText.text = "" + numberOfGems;
 	}
+
+	void updateDarkMode()
+	{
+		string darkMode = PlayerPrefs.GetString("dark");
+		if (darkMode == "Off")
+		{
+			changeButtonSprites(settingsButton, settingsUnPressed, settingsPressed);
+			handImage.sprite = handSprite;
+			// set background color
+			camera.backgroundColor = colors[0];
+			// set both score and best score texts for menu and game over menu
+			// color should always be opposite of background
+			for (int i = 0; i < scoreTexts.Length; i++)
+			{
+				scoreTexts[i].color = colors[1];
+				bestScoreTexts[i].color = colors[1];
+			}
+			// set gem text color -- always opposite of backgound
+			numberOfGemsText.color = colors[1];
+			// set game name text color -- always opposite of background
+			gameNameText.color = colors[1];
+			// set submit button colors
+			changeButtonSprites(submitButton, submitUnPressed, submitPressed);
+		}
+		else
+		{
+			changeButtonSprites(settingsButton, settingsDarkUnPressed, settingsDarkPressed);
+			handImage.sprite = handDarkSprite;
+			// set background color
+			camera.backgroundColor = colors[1];
+			// set both score and best score texts for menu and game over menu
+			// color should always be opposite of background
+			for (int i = 0; i < scoreTexts.Length; i++)
+			{
+				scoreTexts[i].color = colors[0];
+				bestScoreTexts[i].color = colors[0];
+			}
+			// set gem text color -- always opposite of backgound
+			numberOfGemsText.color = colors[0];
+			// set game name text color -- always opposite of background
+			gameNameText.color = colors[0];
+			// set submit button colors
+			changeButtonSprites(submitButton, submitDarkUnPressed, submitDarkPressed);
+		}
+	}
+
+	void changeButtonSprites(Button button, Sprite unpressedImage, Sprite pressedImage)
+	{
+		// Update the sprites of the image component and the pressedSprite of a Button.
+
+		button.GetComponent<Image>().sprite = unpressedImage;
+
+		SpriteState st = new SpriteState();
+		st.pressedSprite = pressedImage;
+		button.spriteState = st;
+  }
 
 
 

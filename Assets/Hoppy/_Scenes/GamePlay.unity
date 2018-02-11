@@ -372,7 +372,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b4e9e460c7488eb48bcb32d3789480e4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -758,6 +758,8 @@ MonoBehaviour:
     type: 2}
   slidingSpeed: 0.007
   uiController: {fileID: 1530382542}
+  blackMaterial: {fileID: 2100000, guid: fdca0da1b69ece24ba2bc506085a3474, type: 2}
+  whiteMaterial: {fileID: 2100000, guid: b4e9e460c7488eb48bcb32d3789480e4, type: 2}
 --- !u!54 &838441955
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1471,6 +1473,7 @@ MonoBehaviour:
   bestScoreTexts:
   - {fileID: 43739014}
   - {fileID: 565944290}
+  gameNameText: {fileID: 1922678171}
   gameOverPanels:
   - {fileID: 0}
   - {fileID: 0}
@@ -1480,6 +1483,26 @@ MonoBehaviour:
   noEnoughGems: {fileID: 0}
   EnoughGems: {fileID: 0}
   numberOfRemainingGemsText: {fileID: 0}
+  settingsButton: {fileID: 990062104}
+  settingsUnPressed: {fileID: 21300000, guid: e8ac6d1a373fa485abe24f298edd9f06, type: 3}
+  settingsPressed: {fileID: 21300000, guid: 4a58267d2bb2348b4906a40a880662c4, type: 3}
+  settingsDarkUnPressed: {fileID: 21300000, guid: 36a0b7a29d8a88041a6e62280ea3491e,
+    type: 3}
+  settingsDarkPressed: {fileID: 21300000, guid: af89682eb4cbe59479331fff17d1c9ad,
+    type: 3}
+  handImage: {fileID: 1176587872}
+  handSprite: {fileID: 21300000, guid: 7ca54a0b9f2fe4426b20b7eeae63fa3e, type: 3}
+  handDarkSprite: {fileID: 21300000, guid: a5687e3bf50de3f48ab110926d8eb974, type: 3}
+  submitButton: {fileID: 1619563642}
+  submitUnPressed: {fileID: 21300000, guid: 96d1f400083994bf48392deb8e8d4a01, type: 3}
+  submitPressed: {fileID: 21300000, guid: 02078d182f8134cffa7e379dfa0d3a25, type: 3}
+  submitDarkUnPressed: {fileID: 21300000, guid: 171f0835be9060b4f844ecfd8a0770cc,
+    type: 3}
+  submitDarkPressed: {fileID: 21300000, guid: 1178301b71bebdc49b50406a5da6ea20, type: 3}
+  camera: {fileID: 1852753897}
+  colors:
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
 --- !u!114 &1530382543
 MonoBehaviour:
   m_ObjectHideFlags: 0
