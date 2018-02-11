@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 
 // Written By Abdalla Tawfik & Fehr Hassan
@@ -42,6 +43,9 @@ public class PlayerController : MonoBehaviour {
 
 	// A reference to the GamePlay UI Controller script.
 	public GamePlayUIController uiController;
+
+  public Material blackMaterial;
+  public Material whiteMaterial;
 
 	#endregion
 
@@ -158,6 +162,15 @@ public class PlayerController : MonoBehaviour {
             // Correct any position error due to late collision detection.
             transform.position = new Vector3(transform.position.x, defultYPos, col.gameObject.transform.position.z);
 
+            // Change Boundary Cube color based on dark mode
+            if (PlayerPrefs.GetString("dark") == "Off")
+            {
+              col.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = blackMaterial;
+            }
+            else
+            {
+              col.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = whiteMaterial;
+            }
             // Show Boundary Cube.
             col.gameObject.transform.GetChild(0).gameObject.SetActive(true);
 

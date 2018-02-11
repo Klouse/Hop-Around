@@ -43,6 +43,10 @@ public class SettingsController : MonoBehaviour {
 	public Sprite sunUnPressed;
 	public Sprite sunPressed;
 
+	public Camera camera;				// used to change background color
+	public Text HTPText;				// HTP text is always opposite color of background
+	public Color [] colors; 		// first element is light, second is dark
+
 	#endregion
 
 
@@ -51,11 +55,9 @@ public class SettingsController : MonoBehaviour {
 
 	void Awake ()
 	{
-		// Need to check dark status as well
-		// Check sound status and change Sound Button sprites accordingly.
+		// Check dark + sound status and change button sprites accordingly.
 		string sound = PlayerPrefs.GetString("sound");
 		string darkMode = PlayerPrefs.GetString("dark");
-		Debug.Log(darkMode);
 		if (sound == "On")
 		{
 			if (darkMode == "Off")
@@ -69,7 +71,37 @@ public class SettingsController : MonoBehaviour {
 		}
 		else if (sound == "Off")
 		{
-			changeButtonSprites (soundButton, soundOffUnPressed, soundOffPressed);
+			if (darkMode == "Off")
+			{
+				changeButtonSprites (soundButton, soundOffUnPressed, soundOffPressed);
+			}
+			else
+			{
+				changeButtonSprites (soundButton, soundOffDarkUnPressed, soundOffDarkPressed);
+			}
+		}
+		// Set the background and rest of the buttons
+		if (darkMode == "Off")
+		{
+			changeButtonSprites (backButton, backUnPressed, backPressed);
+			changeButtonSprites (ballButton, ballUnPressed, ballPressed);
+			changeButtonSprites (darkModeButton, moonUnPressed, moonPressed);
+			// change background color
+			camera.backgroundColor = colors[0];
+			// change text color
+			HTPText.color = colors[1];
+			numberOfGemsText.color = colors[1];
+		}
+		else
+		{
+			changeButtonSprites (backButton, backDarkUnPressed, backDarkPressed);
+			changeButtonSprites (ballButton, ballDarkUnPressed, ballDarkPressed);
+			changeButtonSprites (darkModeButton, sunUnPressed, sunPressed);
+			// change background color
+			camera.backgroundColor = colors[1];
+			// change text color
+			HTPText.color = colors[0];
+			numberOfGemsText.color = colors[0];
 		}
 
 		// Update Number of Gems displayed.
@@ -116,14 +148,13 @@ public class SettingsController : MonoBehaviour {
 	{
 		// dark mode string will get changed everytime it's clicked
 		// no need to keep reseting manually
+		// PlayerPrefs are stored between game launches
 		string darkMode = PlayerPrefs.GetString("dark");
 		string sound = PlayerPrefs.GetString("sound");
 		if (darkMode == "On")
 		{
 			// turn light mode back on
 			PlayerPrefs.SetString("dark", "Off");
-			darkMode = PlayerPrefs.GetString("dark");
-			Debug.Log(darkMode);
 			if(sound == "On")
 			{
 				changeButtonSprites(soundButton, soundOnUnPressed, soundOnPressed);
@@ -138,13 +169,16 @@ public class SettingsController : MonoBehaviour {
 			changeButtonSprites(ballButton, ballUnPressed, backPressed);
 			// change to sun
 			changeButtonSprites(darkModeButton, moonUnPressed, moonPressed);
+			// change background
+			camera.backgroundColor = colors[0];
+			// change text color
+			HTPText.color = colors[1];
+			numberOfGemsText.color = colors[1];
 		}
 		else
 		{
 			// turn dark mode on
 			PlayerPrefs.SetString("dark", "On");
-			darkMode = PlayerPrefs.GetString("dark");
-			Debug.Log(darkMode);
 			if(sound == "On")
 			{
 				changeButtonSprites(soundButton, soundOnDarkUnPressed, soundOnDarkPressed);
@@ -159,6 +193,11 @@ public class SettingsController : MonoBehaviour {
 			changeButtonSprites(ballButton, ballDarkUnPressed, backDarkPressed);
 			// change to sun
 			changeButtonSprites(darkModeButton, sunUnPressed, sunPressed);
+			// change background
+			camera.backgroundColor = colors[1];
+			// change text color
+			HTPText.color = colors[0];
+			numberOfGemsText.color = colors[0];
 		}
 	}
 

@@ -523,6 +523,11 @@ MonoBehaviour:
   moonPressed: {fileID: 21300000, guid: b5eefa795f8ac8a4ab655650316b652f, type: 3}
   sunUnPressed: {fileID: 21300000, guid: e35f48d8337b29c4895eefaa7823c7f3, type: 3}
   sunPressed: {fileID: 21300000, guid: f14c88d76dad4be4ba2756b5147cbc87, type: 3}
+  camera: {fileID: 611570386}
+  HTPText: {fileID: 803800975}
+  colors:
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
 --- !u!4 &844445553
 Transform:
   m_ObjectHideFlags: 0
