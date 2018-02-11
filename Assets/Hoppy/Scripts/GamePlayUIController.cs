@@ -214,7 +214,7 @@ public class GamePlayUIController : MonoBehaviour {
 		SpriteState st = new SpriteState();
 		st.pressedSprite = pressedImage;
 		button.spriteState = st;
-	}
+  }
 
 
 
