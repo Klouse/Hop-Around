@@ -267,6 +267,9 @@ public class GamePlayUIController : MonoBehaviour {
 
 	public void onSettingsButtonClicked ()
 	{
+		string currentScene = SceneManager.GetActiveScene().name;
+		PlayerPrefs.SetString("LastScene", currentScene);
+		PlayerPrefs.Save();
 		// Load Settings Scene.
 		SceneManager.LoadScene ("Settings");
 	}

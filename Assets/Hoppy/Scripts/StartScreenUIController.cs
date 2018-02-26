@@ -57,6 +57,10 @@ public class StartScreenUIController : MonoBehaviour {
 	public Sprite submitDarkUnPressed;
 	public Sprite submitDarkPressed;
 
+	public Button playButton;
+	public Sprite playSprite;
+	public Sprite playDarkSprite;
+
 	public Camera camera;  // used for background colors
 	public Color [] colors;
 
@@ -177,6 +181,7 @@ public class StartScreenUIController : MonoBehaviour {
 			gameNameText.color = colors[1];
 			// set submit button colors
 			changeButtonSprites(submitButton, submitUnPressed, submitPressed);
+			changeButtonSprites(playButton, playSprite, playSprite);
 		}
 		else
 		{
@@ -196,6 +201,7 @@ public class StartScreenUIController : MonoBehaviour {
 			gameNameText.color = colors[0];
 			// set submit button colors
 			changeButtonSprites(submitButton, submitDarkUnPressed, submitDarkPressed);
+			changeButtonSprites(playButton, playDarkSprite, playDarkSprite);
 		}
 	}
 
@@ -261,6 +267,9 @@ public class StartScreenUIController : MonoBehaviour {
 
 	public void onSettingsButtonClicked ()
 	{
+		string currentScene = SceneManager.GetActiveScene().name;
+		PlayerPrefs.SetString("LastScene", currentScene);
+		PlayerPrefs.Save();
 		// Load Settings Scene.
 		SceneManager.LoadScene ("Settings");
 	}
@@ -273,6 +282,13 @@ public class StartScreenUIController : MonoBehaviour {
 	public void onSubmitButtonClicked ()
 	{
 		SceneManager.LoadScene ("GamePlay");
+	}
+
+// This is where Start Skillz will go
+// OnSkillzWillExit will also redirect to StartScreen Scene
+	public void onPlayButtonClicked ()
+	{
+		SceneManager.LoadScene("GamePlay");
 	}
 
 	#endregion
