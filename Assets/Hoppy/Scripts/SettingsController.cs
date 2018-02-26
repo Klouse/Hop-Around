@@ -116,8 +116,23 @@ public class SettingsController : MonoBehaviour {
 
 	public void onBackButtonClicked ()
 	{
-		// Load the previous scene.
-		SceneManager.LoadScene ("GamePlay");
+		// Last Scene is different depending on where we opened settings from
+		string lastScene = PlayerPrefs.GetString("LastScene", null);
+		if (lastScene != null)
+		{
+			// Start Screen
+			if (lastScene == "Start Screen")
+			{
+				// Load the previous scene.
+				SceneManager.LoadScene ("Start Screen");
+			}
+			// Gameplay screen
+			else
+			{
+				// Load the previous scene.
+				SceneManager.LoadScene ("GamePlay");
+			}
+		}
 	}
 
 	public void onSoundButtonClicked ()

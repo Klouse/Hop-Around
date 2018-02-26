@@ -8,7 +8,7 @@ using System;
 // Written By Abdalla Tawfik & Fehr Hassan
 
 
-public class GamePlayUIController : MonoBehaviour {
+public class StartScreenUIController : MonoBehaviour {
 
 	#region Variables Declaration
 
@@ -51,15 +51,15 @@ public class GamePlayUIController : MonoBehaviour {
 	public Sprite settingsDarkUnPressed;
 	public Sprite settingsDarkPressed;
 
-	public Image handImage;
-	public Sprite handSprite;
-	public Sprite handDarkSprite;
-
 	public Button submitButton;
 	public Sprite submitUnPressed;
 	public Sprite submitPressed;
 	public Sprite submitDarkUnPressed;
 	public Sprite submitDarkPressed;
+
+	public Button playButton;
+	public Sprite playSprite;
+	public Sprite playDarkSprite;
 
 	public Camera camera;  // used for background colors
 	public Color [] colors;
@@ -166,7 +166,6 @@ public class GamePlayUIController : MonoBehaviour {
 		if (darkMode == "Off")
 		{
 			changeButtonSprites(settingsButton, settingsUnPressed, settingsPressed);
-			handImage.sprite = handSprite;
 			// set background color
 			camera.backgroundColor = colors[0];
 			// set both score and best score texts for menu and game over menu
@@ -182,11 +181,11 @@ public class GamePlayUIController : MonoBehaviour {
 			gameNameText.color = colors[1];
 			// set submit button colors
 			changeButtonSprites(submitButton, submitUnPressed, submitPressed);
+			changeButtonSprites(playButton, playSprite, playSprite);
 		}
 		else
 		{
 			changeButtonSprites(settingsButton, settingsDarkUnPressed, settingsDarkPressed);
-			handImage.sprite = handDarkSprite;
 			// set background color
 			camera.backgroundColor = colors[1];
 			// set both score and best score texts for menu and game over menu
@@ -202,6 +201,7 @@ public class GamePlayUIController : MonoBehaviour {
 			gameNameText.color = colors[0];
 			// set submit button colors
 			changeButtonSprites(submitButton, submitDarkUnPressed, submitDarkPressed);
+			changeButtonSprites(playButton, playDarkSprite, playDarkSprite);
 		}
 	}
 
@@ -282,6 +282,13 @@ public class GamePlayUIController : MonoBehaviour {
 	public void onSubmitButtonClicked ()
 	{
 		SceneManager.LoadScene ("GamePlay");
+	}
+
+// This is where Start Skillz will go
+// OnSkillzWillExit will also redirect to StartScreen Scene
+	public void onPlayButtonClicked ()
+	{
+		SceneManager.LoadScene("GamePlay");
 	}
 
 	#endregion
