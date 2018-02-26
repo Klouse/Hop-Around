@@ -34,15 +34,6 @@ public class GamePlayUIController : MonoBehaviour {
 	// Best Score UI Texts (On Starting menu and Game Over menu).
 	public Text[] bestScoreTexts;
 
-	// A reference to all game over panels (Rewarded Video, Free Gifts, New Model, Rate Us and Promotion).
-	public RectTransform[] gameOverPanels;
-	// A reference to the No Enough Gems Group of Elemnts (On New Model Panel).
-	public GameObject noEnoughGems;
-	// A reference to the Enough Gems Group of Elemnts (On New Model Panel).
-	public GameObject EnoughGems;
-	// A reference to Number of Remaining Gems UI Text.
-	public Text numberOfRemainingGemsText;
-
 	#endregion
 
 

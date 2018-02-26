@@ -623,6 +623,64 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'BEST: 222'
+--- !u!1001 &725101722
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 838441953}
+    m_Modifications:
+    - target: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1880300604511628, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &731287954
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,7 +730,7 @@ GameObject:
   - component: {fileID: 838441954}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -739,7 +797,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.46, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
-  m_Children: []
+  m_Children:
+  - {fileID: 860334135}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -756,6 +815,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gemsExplosion: {fileID: 1000012160138410, guid: 98576b417133d418bb0e29ac07791c03,
     type: 2}
+  shieldExplosion: {fileID: 1241674766831062, guid: 17a831a454a322b4ca7ea840831e2a0b,
+    type: 2}
+  shield: {fileID: 1880300604511628, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+  powerUps:
+  - Shield
   slidingSpeed: 0.007
   uiController: {fileID: 1530382542}
 --- !u!54 &838441955
@@ -847,6 +911,11 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 859337248}
+--- !u!4 &860334135 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4614123900540258, guid: 910ee4b3cb7151945a089c9a83be7aeb,
+    type: 2}
+  m_PrefabInternal: {fileID: 725101722}
 --- !u!1 &887024927
 GameObject:
   m_ObjectHideFlags: 0
@@ -1471,15 +1540,6 @@ MonoBehaviour:
   bestScoreTexts:
   - {fileID: 43739014}
   - {fileID: 565944290}
-  gameOverPanels:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  noEnoughGems: {fileID: 0}
-  EnoughGems: {fileID: 0}
-  numberOfRemainingGemsText: {fileID: 0}
 --- !u!114 &1530382543
 MonoBehaviour:
   m_ObjectHideFlags: 0
