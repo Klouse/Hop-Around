@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 
 // Written By Abdalla Tawfik & Fehr Hassan
@@ -51,6 +52,9 @@ public class PlayerController : MonoBehaviour {
 
 	// A reference to the GamePlay UI Controller script.
 	public GamePlayUIController uiController;
+
+  public Material blackMaterial;
+  public Material whiteMaterial;
 
 	#endregion
 
