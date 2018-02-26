@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 
@@ -12,6 +13,14 @@ public class PlayerController : MonoBehaviour {
 
 	// A reference to Gems Explosion.
     public GameObject gemsExplosion;
+  // A reference to Shield Explosion.
+    public GameObject shieldExplosion;
+    // a reference to the Shield Model
+    public GameObject shield;
+
+  // A reference to the list of power ups available
+  public Dictionary<string, bool> curPowers = new Dictionary<string, bool>();
+  public string[] powerUps;
 
 	// Ball sliding speed in X Axis.
     public float slidingSpeed;
@@ -80,6 +89,8 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (!gameStarted)
 		{
+      // build the list of powers to toggle on and off
+      buildPowerUpList(powerUps);
 			// Turn on gravity with min gravity value.
 			Physics.gravity = new Vector3(0, minGravity, 0);
 
@@ -91,24 +102,31 @@ public class PlayerController : MonoBehaviour {
 
 	void checkGameOver ()
 	{
-		if (transform.position.y < 0 && !gameOver)
+		if (transform.position.y < (0 + findClosestCube().GetComponent<Collider>().bounds.size.y / 2) && !gameOver)
 		{
-			// Game is Over.
+      if (curPowers["Shield"])
+      {
+        // use your shield
+        useShield();
+      }
+      else{
+  			// Game is Over.
 
-			// Stop all forces.
-			GetComponent<Rigidbody>().velocity = Vector3.zero;
+  			// Stop all forces.
+  			GetComponent<Rigidbody>().velocity = Vector3.zero;
 
-			// Increase the gravity.
-			Physics.gravity = new Vector3(0, maxGravity-900.0f, 0);
-
-
-			// Update UI and gameOver boolean.
-			uiController.onGameOver ();
-			gameOver = true;
+  			// Increase the gravity.
+  			Physics.gravity = new Vector3(0, maxGravity-900.0f, 0);
 
 
-			// Destroy Player Game Object after 1 seconds.
-			Destroy (gameObject, 1f);
+  			// Update UI and gameOver boolean.
+  			uiController.onGameOver ();
+  			gameOver = true;
+
+
+  			// Destroy Player Game Object after 1 seconds.
+  			Destroy (gameObject, 1f);
+      }
 		}
 	}
 
@@ -146,53 +164,17 @@ public class PlayerController : MonoBehaviour {
         // While the game is started and is not over yet.
         if (col.gameObject.tag == "cube" && gameStarted && !gameOver)
         {
-            // Collision detected with a tile (Cube) Object.
-
-            score++;                             // Increminting the score.
-            uiController.score = score;          // Update score variable of uiController script.
-            uiController.updateScoreUITexts();  // Update all Score UI Texts with the current score.
-
-
-            controlGravity();                   // Calculate the new gravity according to the new score.
-
-
-            // Default Y position if the Player is touching the top of a Cube.
-            float defultYPos = GetComponent<Collider>().bounds.size.y / 2 + col.gameObject.GetComponent<Collider>().bounds.size.y / 2;
-
-            // Correct any position error due to late collision detection.
-            transform.position = new Vector3(transform.position.x, defultYPos, col.gameObject.transform.position.z);
-
-            // Change Boundary Cube color based on dark mode
-            if (PlayerPrefs.GetString("dark") == "Off")
-            {
-              col.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = blackMaterial;
-            }
-            else
-            {
-              col.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = whiteMaterial;
-            }
-            // Show Boundary Cube.
-            col.gameObject.transform.GetChild(0).gameObject.SetActive(true);
-
-
-			// Get the current gravity value.
-            float g = Physics.gravity.magnitude;
-
-			// Calculate the total time required to jump with specific Height.
-            float totalTime = Mathf.Sqrt(jumpHeight * 8 / g);
-
-			// Calculate the vertical speed required to jump with specific Height.
-            float vSpeed = totalTime * g / 2;
-			// Calculate the forward speed required to jump specific Distance.
-            float fSpeed = jumpDistance / totalTime;
-
-
-            // launch the Ball with the calculated speed.
-            GetComponent<Rigidbody>().velocity = new Vector3(0, vSpeed, fSpeed);
+          // increment score
+          incrementScore();
+          // Make the player jump
+          jump(col.gameObject);
         }
-        if (col.tag == "Pick Up")
+        if (col.tag == "Gem")
         {
             // Collision detected with a pick up (Gem) Object.
+
+            // increment score
+            incrementScore();
 
             // Deactivate The Gem Object.
             col.gameObject.SetActive(false);
@@ -211,6 +193,60 @@ public class PlayerController : MonoBehaviour {
             // Destroy Gem Explosion Object.
             Destroy(gemExplosionObject, 1f);
         }
+        if (col.tag == "Shield_Pickup")
+        {
+            // Collision detected with a Shield Object.
+            // Deactivate The Shield Object.
+            col.gameObject.SetActive(false);
+            // Call powerup handler
+            enableShield();
+        }
+    }
+
+    void jump(GameObject go)
+    {
+      controlGravity();                   // Calculate the new gravity according to the new score.
+
+      // Default Y position if the Player is touching the top of a Cube.
+      float defultYPos = GetComponent<Collider>().bounds.size.y / 2 + go.gameObject.GetComponent<Collider>().bounds.size.y / 2;
+
+      // Correct any position error due to late collision detection.
+      transform.position = new Vector3(transform.position.x, defultYPos, go.gameObject.transform.position.z);
+      // Update shield position
+      if (curPowers["Shield"])
+      {
+      shield.transform.position = new Vector3(transform.position.x, defultYPos, go.gameObject.transform.position.z);
+      }
+        if (go.tag == "cube" && !curPowers["Shield"])
+        {
+          // Show Boundary Cube.
+          go.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+        }
+
+
+// Get the current gravity value.
+      float g = Physics.gravity.magnitude;
+
+// Calculate the total time required to jump with specific Height.
+      float totalTime = Mathf.Sqrt(jumpHeight * 8 / g);
+
+// Calculate the vertical speed required to jump with specific Height.
+      float vSpeed = totalTime * g / 2;
+// Calculate the forward speed required to jump specific Distance.
+      float fSpeed = jumpDistance / totalTime;
+
+
+      // launch the Ball with the calculated speed.
+      Vector3 v = new Vector3(0, vSpeed, fSpeed);
+      GetComponent<Rigidbody>().velocity = v;
+    }
+
+    // increment score by 1
+    void incrementScore()
+    {
+      score++;                             // Increminting the score.
+      uiController.score = score;          // Update score variable of uiController script.
+      uiController.updateScoreUITexts();  // Update all Score UI Texts with the current score.
     }
 
     void controlBallRotation ()
@@ -232,6 +268,59 @@ public class PlayerController : MonoBehaviour {
 			Physics.gravity = new Vector3(0, newYGravity, 0);
 		}
 	}
-
 	#endregion
+
+  public GameObject findClosestCube()
+  {
+    GameObject[] cubes;
+    cubes = GameObject.FindGameObjectsWithTag("cube");
+    GameObject closest = null;
+    float distance = Mathf.Infinity;
+    Vector3 position = transform.position;
+    foreach (GameObject cube in cubes)
+    {
+      float diff = cube.transform.position.z - position.z;
+      if (Mathf.Abs(diff) < distance)
+      {
+        closest = cube;
+        distance = Mathf.Abs(diff);
+      }
+    }
+    return closest;
+  }
+
+  #region powerUps
+  void buildPowerUpList(string[] ps)
+  {
+    foreach (string s in ps)
+    {
+      curPowers.Add(s,false);
+    }
+  }
+  void enableShield()
+  {
+    // turns on powerUp
+    // set sheild to true
+    curPowers["Shield"] = true;
+    // Turn on shield effect on player = blue glow
+    transform.GetChild(0).gameObject.SetActive(true);
+  }
+  void useShield()
+  {
+    // increment score
+    incrementScore();
+    // Make the player jump "off" of closest cube z position
+    jump(findClosestCube());
+    // Instantiate Gem Explosion in the same position of the picked Gem.
+    GameObject shieldExplosionObject = Instantiate(shieldExplosion, new Vector3(transform.position.x,(transform.position.y - GetComponent<Collider>().bounds.size.y / 2), transform.position.z), shieldExplosion.transform.rotation) as GameObject;
+
+    // Destroy Gem Explosion Object.
+    Destroy(shieldExplosionObject, 2f);
+
+    // set shield to false
+    curPowers["Shield"] = false;
+    // Turn on shield effect on player = blue glow
+    transform.GetChild(0).gameObject.SetActive(false);
+  }
+  #endregion
 }

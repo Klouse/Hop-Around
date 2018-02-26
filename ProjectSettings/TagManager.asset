@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Pick Up
+  - cube
+  - GamePlayCanvas
+  - Shield
+  - Gem
+  - Shield_Pickup
   layers:
   - Default
   - TransparentFX

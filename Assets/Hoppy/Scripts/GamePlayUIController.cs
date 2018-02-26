@@ -63,7 +63,6 @@ public class GamePlayUIController : MonoBehaviour {
 
 	public Camera camera;  // used for background colors
 	public Color [] colors;
-
 	#endregion
 
 
