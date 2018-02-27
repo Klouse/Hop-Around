@@ -214,8 +214,17 @@ public class PlayerController : MonoBehaviour {
       transform.position = new Vector3(transform.position.x, defultYPos, go.gameObject.transform.position.z);
         if (go.tag == "cube" && !curPowers["Shield"])
         {
+		if (PlayerPrefs.GetString("dark") == "Off")
+		{
+			col.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = blackMaterial;
+		}
+		else
+		{
+			col.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = whiteMaterial;
+		}
           // Show Boundary Cube.
           go.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+	
         }
 
 
