@@ -116,12 +116,14 @@ public class PlayerController : MonoBehaviour {
   			GetComponent<Rigidbody>().velocity = Vector3.zero;
 
   			// Increase the gravity.
-  			Physics.gravity = new Vector3(0, maxGravity-900.0f, 0);
+  			Physics.gravity = new Vector3(0, maxGravity-750.0f, 0);
 
 
   			// Update UI and gameOver boolean.
   			uiController.onGameOver ();
   			gameOver = true;
+
+          Debug.Log(" Game Over True");
 
 
   			// Destroy Player Game Object after 1 seconds.
@@ -205,18 +207,11 @@ public class PlayerController : MonoBehaviour {
 
     void jump(GameObject go)
     {
-      controlGravity();                   // Calculate the new gravity according to the new score.
-
       // Default Y position if the Player is touching the top of a Cube.
       float defultYPos = GetComponent<Collider>().bounds.size.y / 2 + go.gameObject.GetComponent<Collider>().bounds.size.y / 2;
 
       // Correct any position error due to late collision detection.
       transform.position = new Vector3(transform.position.x, defultYPos, go.gameObject.transform.position.z);
-      // Update shield position
-      if (curPowers["Shield"])
-      {
-      shield.transform.position = new Vector3(transform.position.x, defultYPos, go.gameObject.transform.position.z);
-      }
         if (go.tag == "cube" && !curPowers["Shield"])
         {
           // Show Boundary Cube.
@@ -228,7 +223,7 @@ public class PlayerController : MonoBehaviour {
       float g = Physics.gravity.magnitude;
 
 // Calculate the total time required to jump with specific Height.
-      float totalTime = Mathf.Sqrt(jumpHeight * 8 / g);
+      float totalTime = Mathf.Sqrt(jumpHeight * 7 / g);
 
 // Calculate the vertical speed required to jump with specific Height.
       float vSpeed = totalTime * g / 2;
@@ -247,6 +242,7 @@ public class PlayerController : MonoBehaviour {
       score++;                             // Increminting the score.
       uiController.score = score;          // Update score variable of uiController script.
       uiController.updateScoreUITexts();  // Update all Score UI Texts with the current score.
+      controlGravity();                   // Calculate the new gravity according to the new score.
     }
 
     void controlBallRotation ()
@@ -266,6 +262,7 @@ public class PlayerController : MonoBehaviour {
 		if (score >0 && score % gravityRate == 0 && newYGravity > maxGravity)
 		{
 			Physics.gravity = new Vector3(0, newYGravity, 0);
+      Debug.Log(Physics.gravity);
 		}
 	}
 	#endregion

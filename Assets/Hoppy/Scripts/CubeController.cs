@@ -98,6 +98,11 @@ public class CubeController : MonoBehaviour {
 
 	}
 
+	void FixedUpdate()
+	{
+		
+	}
+
 	#endregion
 
 
