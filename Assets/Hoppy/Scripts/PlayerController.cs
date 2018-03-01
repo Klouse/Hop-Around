@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour {
 	// Maximum gravity -> maximum speed.
 	private float maxGravity = -85;
 	// After how many steps the gravity will be increased.
-	private int gravityRate = 10;
+	private int gravityRate = 1;
 	// How much the gravity will be increased after each speed step.
 	private int gravityStep = 10;
 
@@ -214,17 +214,17 @@ public class PlayerController : MonoBehaviour {
       transform.position = new Vector3(transform.position.x, defultYPos, go.gameObject.transform.position.z);
         if (go.tag == "cube" && !curPowers["Shield"])
         {
-		if (PlayerPrefs.GetString("dark") == "Off")
-		{
-			col.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = blackMaterial;
-		}
-		else
-		{
-			col.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = whiteMaterial;
-		}
+      		if (PlayerPrefs.GetString("dark") == "Off")
+      		{
+      			go.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = blackMaterial;
+      		}
+      		else
+      		{
+      			go.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = whiteMaterial;
+      		}
           // Show Boundary Cube.
           go.gameObject.transform.GetChild(0).gameObject.SetActive(true);
-	
+
         }
 
 
@@ -232,7 +232,9 @@ public class PlayerController : MonoBehaviour {
       float g = Physics.gravity.magnitude;
 
 // Calculate the total time required to jump with specific Height.
+// number 8 breaks the totalTime /shrug
       float totalTime = Mathf.Sqrt(jumpHeight * 7 / g);
+      Debug.Log(totalTime);
 
 // Calculate the vertical speed required to jump with specific Height.
       float vSpeed = totalTime * g / 2;

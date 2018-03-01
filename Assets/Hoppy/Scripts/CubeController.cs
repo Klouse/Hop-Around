@@ -98,11 +98,6 @@ public class CubeController : MonoBehaviour {
 
 	}
 
-	void FixedUpdate()
-	{
-		
-	}
-
 	#endregion
 
 
@@ -174,7 +169,24 @@ public class CubeController : MonoBehaviour {
 
 	#endregion
 
-
+	public GameObject findPlayer()
+	{
+		GameObject[] cubes;
+		cubes = GameObject.FindGameObjectsWithTag("Player");
+		GameObject closest = null;
+		float distance = Mathf.Infinity;
+		Vector3 position = transform.position;
+		foreach (GameObject cube in cubes)
+		{
+			float diff = cube.transform.position.z - position.z;
+			if (diff < distance)
+			{
+				closest = cube;
+				distance = diff;
+			}
+		}
+		return closest;
+	}
 
 	#region Spawn cubes and gems, and move them from up to down and horizontally
 

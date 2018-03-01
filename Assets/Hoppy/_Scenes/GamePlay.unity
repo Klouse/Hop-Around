@@ -678,6 +678,14 @@ Prefab:
       propertyPath: m_LocalScale.z
       value: 0.6
       objectReference: {fileID: 0}
+    - target: {fileID: 1880300604511628, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1692485700064142, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
   m_IsPrefabParent: 0
@@ -728,7 +736,8 @@ GameObject:
   - component: {fileID: 838441950}
   - component: {fileID: 838441955}
   - component: {fileID: 838441954}
-  m_Layer: 0
+  - component: {fileID: 838441956}
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -839,6 +848,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!114 &838441956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 838441949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f48976e70508674a9d8827fd9184645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sendTriggerMessage: 0
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 4294967039
+  skinWidth: 0.1
 --- !u!1 &859337248
 GameObject:
   m_ObjectHideFlags: 0
