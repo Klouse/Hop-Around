@@ -271,7 +271,6 @@ public class PlayerController : MonoBehaviour {
 		if (score >0 && score % gravityRate == 0 && newYGravity > maxGravity)
 		{
 			Physics.gravity = new Vector3(0, newYGravity, 0);
-      Debug.Log(Physics.gravity);
 		}
 	}
 	#endregion
