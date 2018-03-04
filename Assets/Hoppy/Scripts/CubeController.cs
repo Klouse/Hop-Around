@@ -20,10 +20,8 @@ public class CubeController : MonoBehaviour {
 	// Queue of the cubes
 	private Queue<GameObject> queueOfCubes = new Queue<GameObject>();
 
-	// A reference to the gem game object.
-	public GameObject gems;
-	// Queue of gems.
-	private Queue<GameObject> queueOfGems = new Queue<GameObject>();
+	// A reference to the power game object.
+	public GameObject powers;
 
 	// Color of the cubes.
 	public Color currentColor;
@@ -79,15 +77,16 @@ public class CubeController : MonoBehaviour {
 		FillColors();
 		// Intialize and create cubes.
 		StartCoroutine(OnStart());
-
-		// Intialize and create gems.
+/*
+		// Intialize and create powers.
 		for (int i= 0;i <= 9; i++)
 		{
-			GameObject instantiatedGems = Instantiate(gems) as GameObject;
-			instantiatedGems.SetActive(false);
-			instantiatedGems.name = "Gem";
-			queueOfGems.Enqueue(instantiatedGems);
+			GameObject instantiatedPowers = Instantiate(powers);
+			instantiatedPowers.SetActive(false);
+			instantiatedPowers.name = "Power";
+			queueOfPowers.Enqueue(instantiatedPowers);
 		}
+		*/
 	}
 
 	void LateUpdate()
@@ -100,7 +99,7 @@ public class CubeController : MonoBehaviour {
 
 	void FixedUpdate()
 	{
-		
+
 	}
 
 	#endregion
@@ -167,7 +166,7 @@ public class CubeController : MonoBehaviour {
 		// Sliding the cubes from up to down.
 		for (int i = 1; i <= numberOfInstantiatedCubes; i++)
 		{
-			StartCoroutine(slidingDownTheCubes(instantiatedCubes[i], null));
+			StartCoroutine(slidingDownTheCubes(instantiatedCubes[i]));
 
 		}
 	}
@@ -176,7 +175,7 @@ public class CubeController : MonoBehaviour {
 
 
 
-	#region Spawn cubes and gems, and move them from up to down and horizontally
+	#region Spawn cubes and powers, and move them from up to down and horizontally
 
 	public void spawnCubes ()
 	{
@@ -190,8 +189,8 @@ public class CubeController : MonoBehaviour {
 			counterForSpawnCubes = 0;
 		}
 
-		// Boolean value to check if the gem is instantiated or not.
-		bool gemInstantiated = false;
+		// Boolean value to check if the power is instantiated or not.
+		bool powerInstantiated = false;
 
 
 		// Adjust  the position for the cubes that will be spawned.
@@ -213,76 +212,25 @@ public class CubeController : MonoBehaviour {
 		instantiatedCube.GetComponent<Renderer>().material.color = currentColor; // currentColor comes from changeColor()
 		instantiatedCube.SetActive(true);
 
-		// Check if the gem will be spawned or not.
+		// Check if the power will be turned on or not.
 		// Skillz Random
-		int randomNumberToSpawnGems = UnityEngine.Random.Range(0,11);
-		if (randomNumberToSpawnGems >= 10)
+		int randomNumberToSpawnPowers = UnityEngine.Random.Range(0,11);
+		if (randomNumberToSpawnPowers >= 10)
 		{
-			gemInstantiated = true;
-			// Dequeue a gem from the queue and put it above the cube.
-			GameObject gem = queueOfGems.Dequeue();
-			gem.transform.position = new Vector3(place.x,(place.y + 0.6f),place.z);
-			gem.SetActive(true);
-			// Call a coroutine which is responsible for moving the cube and the gem from up to down.
-			StartCoroutine(slidingDownTheCubes(instantiatedCube, gem));
+			powerInstantiated = true;
+			instantiatedCube.transform.Find("ShieldPickup").gameObject.SetActive(true);
 		}
 
  		// Increment row counter
 		row++;
-
-		if (!gemInstantiated)
-			// Call a coroutine which is responsible for moving the cube from up to down.
-			StartCoroutine(slidingDownTheCubes(instantiatedCube,null));
+		// Call a coroutine which is responsible for moving the cube and the power from up to down.
+		StartCoroutine(slidingDownTheCubes(instantiatedCube));
 	}
 
-	IEnumerator slidingDownTheCubes(GameObject instantiatedCube, GameObject gem)
+	IEnumerator slidingDownTheCubes(GameObject instantiatedCube)
 	{
 		// A variable changes the speed according to the height of the cube
 		float relativeSpeed;
-
-		// The cube and the gem will be sliding down.
-		if (gem != null)
-		{
-			while (instantiatedCube.transform.position.y >= 0.1f)
-			{
-				// Change the speed according to the height of the cube.
-				if (instantiatedCube.transform.position.y <= 0.5f)
-					relativeSpeed = 0.5f;
-				else relativeSpeed = instantiatedCube.transform.position.y;
-
-				// Sliding the cube and the gem.
-				instantiatedCube.transform.Translate(Vector3.down * 2 * relativeSpeed * slidingSpeed * Time.deltaTime);
-				gem.transform.Translate(Vector3.down * relativeSpeed * 2 * slidingSpeed * Time.deltaTime);
-				yield return null;
-			}
-
-			//Adjust the postion of the cube and the gem.
-			instantiatedCube.transform.position = new Vector3(instantiatedCube.transform.position.x,
-				0,
-				instantiatedCube.transform.position.z
-			);
-			gem.transform.position = new Vector3(instantiatedCube.transform.position.x,
-				0.6f,
-				instantiatedCube.transform.position.z
-			);
-
-			// Check if this cube and the gem will be moved horizontally or not
-			randomForMovingTheCubeInXaxis = UnityEngine.Random.Range(0, 9);
-			if (randomForMovingTheCubeInXaxis >= 8)
-				StartCoroutine(moveCube(instantiatedCube, gem, instantiatedCube.transform.position.x, instantiatedCube.transform.position.z));
-			else
-			{
-				float z = instantiatedCube.transform.position.z;
-				while (z == instantiatedCube.transform.position.z) yield return null;
-				gem.transform.position = new Vector3(0, 0, 0);
-				gem.SetActive(false);
-				queueOfGems.Enqueue(gem);
-				yield break;
-			}
-		}
-		// Sliding the cube only.
-		else
-		{
 			while (instantiatedCube.transform.position.y >= 0.1f)
 			{
 				// Change the speed according to the height of the cube.
@@ -306,42 +254,13 @@ public class CubeController : MonoBehaviour {
 			randomForMovingTheCubeInXaxis = UnityEngine.Random.Range(0, 9);
 			if (randomForMovingTheCubeInXaxis >= 8 & row > 5)
 				StartCoroutine(moveCube(instantiatedCube, null, instantiatedCube.transform.position.x, instantiatedCube.transform.position.z));
-		}
+		//}
 	}
 
-	// Coroutine which is responsible for moving the cube and the gem horizontally.
-	IEnumerator moveCube(GameObject cubeWillMove, GameObject gemWillMove, float displacementInXAxis, float displacementInZAxis)
+	// Coroutine which is responsible for moving the cube and the power horizontally.
+	IEnumerator moveCube(GameObject cubeWillMove, GameObject powerWillMove, float displacementInXAxis, float displacementInZAxis)
 	{
 		float z = cubeWillMove.transform.position.z;
-		if (gemWillMove != null)                                                                                                                    // Check if there is a gem attached to the cube or not.
-		{
-			while (z == cubeWillMove.transform.position.z)                                                                                          // Check if the cube is enqueued or not
-			{
-
-				while ((cubeWillMove.transform.position.x <= displacementInXAxis + margin) && (z == cubeWillMove.transform.position.z))             // Move the cube and the gem to the right
-				{
-					cubeWillMove.GetComponent<Transform>().Translate(Vector3.right * Time.deltaTime * horizontalSpeed);
-					gemWillMove.transform.position = new Vector3(cubeWillMove.transform.position.x, 0.6f, gemWillMove.transform.position.z);
-					yield return null;
-				}
-
-
-				while ((cubeWillMove.transform.position.x > displacementInXAxis - margin) && (z == cubeWillMove.transform.position.z))              // Move the cube and the gem to the left
-				{
-					cubeWillMove.GetComponent<Transform>().Translate(Vector3.left * Time.deltaTime * horizontalSpeed);
-					gemWillMove.transform.position = new Vector3(cubeWillMove.transform.position.x, 0.6f, gemWillMove.transform.position.z);
-					yield return null;
-				}
-			}
-
-			// Gem will be unattached from the cube when the cube is enqueued.
-			gemWillMove.transform.position = new Vector3(0, 0, 0);
-			gemWillMove.SetActive(false);
-			queueOfGems.Enqueue(gemWillMove);                                                                                                           // Enqueue the gem.
-			yield break;
-		}
-		else                                                                                                                                            // The cube without the gem will be moved horizontally.
-		{
 			while (z == cubeWillMove.transform.position.z)
 			{
 				while ((cubeWillMove.transform.position.x <= displacementInXAxis + margin) && (z == cubeWillMove.transform.position.z))                 // Move the cube to the right.
@@ -356,7 +275,7 @@ public class CubeController : MonoBehaviour {
 				}
 			}
 			yield break;
-		}
+		//}
 
 	}
 
@@ -382,8 +301,9 @@ public class CubeController : MonoBehaviour {
 		} while (randomColor == currentColor);
 		currentColor = randomColor;
 
+		GameObject[] activeCubes = GameObject.FindGameObjectsWithTag("cube");
 		// Changing the color of the cubes.
-		foreach(GameObject cube in instantiatedCubes)
+		foreach(GameObject cube in activeCubes)
 		{
 			cube.GetComponent<Renderer>().material.color = currentColor;
 		}
@@ -413,6 +333,8 @@ public class CubeController : MonoBehaviour {
 		{
 			// Reset the position of the cube.
 			other.gameObject.transform.position = new Vector3(0, 0, 0);
+			if (other.gameObject.name == "pCube")
+			Destroy(other.gameObject);
 			// Enqueue this cube to the cubes' queue.
 			if (other.gameObject.name == "Cube")
 			queueOfCubes.Enqueue(other.gameObject);
