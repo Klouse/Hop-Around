@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour {
   public string[] powerUps;
 
 	// Ball sliding speed in X Axis.
-    public float slidingSpeed;
+  public float slidingSpeed;
 	// The magnitude of the limit of Player X position.
 	private float xPosLimit = 5f;
 	// Jump distance in Z Axis.
@@ -147,7 +147,7 @@ public class PlayerController : MonoBehaviour {
 			{
 				// Control sliding using touch input.
 				Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
-				transform.Translate(touchDeltaPosition.x * slidingSpeed, 0, 0);
+				transform.Translate(touchDeltaPosition.x * slidingSpeed * Time.deltaTime, 0, 0);
 			}
 			else if (useKeyboard)
 			{

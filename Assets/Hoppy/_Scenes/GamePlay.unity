@@ -678,6 +678,11 @@ Prefab:
       propertyPath: m_LocalScale.z
       value: 0.6
       objectReference: {fileID: 0}
+    - target: {fileID: 33217280396095000, guid: 910ee4b3cb7151945a089c9a83be7aeb,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 7b74b4d0f9ac00a418d21be6310bedc9, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
   m_IsPrefabParent: 0
@@ -820,7 +825,7 @@ MonoBehaviour:
   shield: {fileID: 1880300604511628, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
   powerUps:
   - Shield
-  slidingSpeed: 0.007
+  slidingSpeed: 1
   uiController: {fileID: 1530382542}
   blackMaterial: {fileID: 2100000, guid: fdca0da1b69ece24ba2bc506085a3474, type: 2}
   whiteMaterial: {fileID: 2100000, guid: b4e9e460c7488eb48bcb32d3789480e4, type: 2}
