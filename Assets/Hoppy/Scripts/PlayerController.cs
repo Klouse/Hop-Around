@@ -56,6 +56,10 @@ public class PlayerController : MonoBehaviour {
   public Material blackMaterial;
   public Material whiteMaterial;
 
+  public float fadeTimeWait;
+  public float fadeAmount;
+
+
 	#endregion
 
 
@@ -153,7 +157,7 @@ public class PlayerController : MonoBehaviour {
 			{
 				// Control Sliding using Keyboard right and left arrow buttons.
 				float moveHorizontal = Input.GetAxis ("Horizontal");
-				transform.Translate(moveHorizontal * slidingSpeed * 14, 0, 0);
+				transform.Translate(moveHorizontal * slidingSpeed * 0.2f, 0, 0);
 			}
 
 			// Clamp the Player's X position between - xPosLimit and xPosLimit.
@@ -168,6 +172,8 @@ public class PlayerController : MonoBehaviour {
         {
           // increment score
           incrementScore();
+          // play sound
+          playSound();
           // Make the player jump
           jump(col.gameObject);
         }
@@ -217,10 +223,12 @@ public class PlayerController : MonoBehaviour {
 		if (PlayerPrefs.GetString("dark") == "Off")
 		{
 			go.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = blackMaterial;
+      StartCoroutine(fadeCube(go));
 		}
 		else
 		{
 			go.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = whiteMaterial;
+      StartCoroutine(fadeCube(go));
 		}
           // Show Boundary Cube.
           go.gameObject.transform.GetChild(0).gameObject.SetActive(true);
@@ -253,6 +261,26 @@ public class PlayerController : MonoBehaviour {
       uiController.updateScoreUITexts();  // Update all Score UI Texts with the current score.
       controlGravity();                   // Calculate the new gravity according to the new score.
     }
+
+    // plays sound if sound is enabled
+    void playSound()
+    {
+      AudioSource audio = GetComponent<AudioSource>();
+      audio.Play();
+    }
+
+    // fade out boundary cube
+    IEnumerator fadeCube(GameObject cube)
+  	{
+      var material = cube.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material;
+      var color = material.color;
+      while(color.a > 0.0f)
+      {
+        yield return new WaitForSeconds(fadeTimeWait);
+        color = material.color;
+        material.color = new Color(color.r, color.g, color.b, color.a - (fadeAmount * Time.deltaTime));
+      }
+  	}
 
     void controlBallRotation ()
 	{
