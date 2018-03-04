@@ -100,7 +100,7 @@ public class CubeController : MonoBehaviour {
 
 	void FixedUpdate()
 	{
-		
+
 	}
 
 	#endregion
@@ -418,6 +418,7 @@ public class CubeController : MonoBehaviour {
 			queueOfCubes.Enqueue(other.gameObject);
 			// Disable the child of the cube to.
 			other.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+
 			// Disable the cube game object.
 			other.gameObject.SetActive(false);
 			// Call "spawnCubes" function to spawn a new cube.
