@@ -20,8 +20,10 @@ public class CubeController : MonoBehaviour {
 	// Queue of the cubes
 	private Queue<GameObject> queueOfCubes = new Queue<GameObject>();
 
-	// A reference to the power game object.
-	public GameObject powers;
+	// A reference to the items game object.
+	public GameObject[] items;
+	// List of items
+	private List<GameObject> listOfItems = new List<GameObject>();
 
 	// Color of the cubes.
 	public Color currentColor;
@@ -77,16 +79,15 @@ public class CubeController : MonoBehaviour {
 		FillColors();
 		// Intialize and create cubes.
 		StartCoroutine(OnStart());
-/*
+
 		// Intialize and create powers.
-		for (int i= 0;i <= 9; i++)
+		for (int i= 0;i < items.Length; i++)
 		{
-			GameObject instantiatedPowers = Instantiate(powers);
-			instantiatedPowers.SetActive(false);
-			instantiatedPowers.name = "Power";
-			queueOfPowers.Enqueue(instantiatedPowers);
+			GameObject instantiatedItem = Instantiate(items[i]);
+			instantiatedItem.SetActive(false);
+			listOfItems.Add(instantiatedItem);
 		}
-		*/
+
 	}
 
 	void LateUpdate()
@@ -191,6 +192,7 @@ public class CubeController : MonoBehaviour {
 
 		// Boolean value to check if the power is instantiated or not.
 		bool powerInstantiated = false;
+		bool itemInstantiated = false;
 
 
 		// Adjust  the position for the cubes that will be spawned.
@@ -215,10 +217,13 @@ public class CubeController : MonoBehaviour {
 		// Check if the power will be turned on or not.
 		// Skillz Random
 		int randomNumberToSpawnPowers = UnityEngine.Random.Range(0,11);
-		if (randomNumberToSpawnPowers >= 10)
+		if (randomNumberToSpawnPowers >= 0)
 		{
 			powerInstantiated = true;
-			instantiatedCube.transform.Find("ShieldPickup").gameObject.SetActive(true);
+			GameObject i = itemPicker();
+			i.transform.position = new Vector3(instantiatedCube.transform.position.x, instantiatedCube.transform.position.y + 0.6f, instantiatedCube.transform.position.z);
+			i.transform.parent = instantiatedCube.transform;
+			i.SetActive(true);
 		}
 
  		// Increment row counter
@@ -279,6 +284,21 @@ public class CubeController : MonoBehaviour {
 
 	}
 
+	#endregion
+
+	#region item
+	GameObject itemPicker()
+	{
+		// Pick an item in the list
+		// Skillz random
+		int randomItem = UnityEngine.Random.Range(0, listOfItems.Count-1);
+		if (randomItem == 0)
+		{
+			return listOfItems[0];
+		}else{
+			return listOfItems[1];
+		}
+	}
 	#endregion
 
 
