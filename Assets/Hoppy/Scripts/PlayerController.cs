@@ -47,9 +47,6 @@ public class PlayerController : MonoBehaviour {
 	// Determine whether or not keyboard will be used.
 	private bool useKeyboard = true;
 
-	// Game Score (steps).
-	private int score = -1;
-
 	// A reference to the GamePlay UI Controller script.
 	public GamePlayUIController uiController;
 
@@ -58,6 +55,20 @@ public class PlayerController : MonoBehaviour {
 
   public float fadeTimeWait;
   public float fadeAmount;
+	// Game Step tracker
+	private int steps = -1;
+
+  // Overall game score
+  public int score = 0;
+  // Score multiplier
+  public float scrMultiplier = 1;
+  // Score per platform
+  private int platformScore = 100;
+  // Score per powerup
+  private int powerUpScore = 150;
+
+  // Score UI increment
+  public float scoreUpdateDuration = 0.2f;
 
 
 	#endregion
@@ -170,8 +181,10 @@ public class PlayerController : MonoBehaviour {
         // While the game is started and is not over yet.
         if (col.gameObject.tag == "cube" && gameStarted && !gameOver)
         {
-          // increment score
-          incrementScore();
+          // increment steps
+          incrementSteps();
+          // update score with platform score
+          updateScore(platformScore);
           // play sound
           playSound();
           // Make the player jump
@@ -181,8 +194,8 @@ public class PlayerController : MonoBehaviour {
         {
             // Collision detected with a pick up (Gem) Object.
 
-            // increment score
-            incrementScore();
+            // update current score with gem value
+            updateScore(powerUpScore);
 
             // Deactivate The Gem Object.
             col.gameObject.SetActive(false);
@@ -253,14 +266,43 @@ public class PlayerController : MonoBehaviour {
       GetComponent<Rigidbody>().velocity = v;
     }
 
-    // increment score by 1
-    void incrementScore()
+    // increment distance traveled
+    void incrementSteps()
     {
-      score++;                             // Increminting the score.
-      uiController.score = score;          // Update score variable of uiController script.
-      uiController.updateScoreUITexts();  // Update all Score UI Texts with the current score.
+      steps++;                             // Increminting the step count.
       controlGravity();                   // Calculate the new gravity according to the new score.
     }
+
+    // Update score with provided value
+    void updateScore(int scoreAddition)
+    {
+      score += (int)(scoreAddition * scrMultiplier);
+      // Send score to countTo
+      UICountTo(score);
+    }
+
+    void UICountTo(int target)
+    {
+      StopCoroutine ("CountTo");
+      StartCoroutine ("CountTo", target);
+    }
+
+    IEnumerator CountTo (int target)
+    {
+         int start = uiController.score;
+         int tmpScore;
+         for (float timer = 0; timer < scoreUpdateDuration; timer += Time.deltaTime) {
+             float progress = timer / scoreUpdateDuration;
+             tmpScore = (int)Mathf.Lerp (start, target, progress);
+             uiController.score = tmpScore;      // Update score variable of uiController script.
+             uiController.updateScoreUITexts();  // Update all Score UI Texts with the current score.
+             yield return null;
+         }
+         uiController.score = target;
+         uiController.updateScoreUITexts();  // Update all Score UI Texts with the current score.
+     }
+
+
 
     // plays sound if sound is enabled
     void playSound()
@@ -296,7 +338,7 @@ public class PlayerController : MonoBehaviour {
 		float newYGravity = Physics.gravity.y - gravityStep;
 
 		// Increase the gravity after each speed steps with the gravit step until it reach the maximum gravity.
-		if (score >0 && score % gravityRate == 0 && newYGravity > maxGravity)
+		if (steps >0 && steps % gravityRate == 0 && newYGravity > maxGravity)
 		{
 			Physics.gravity = new Vector3(0, newYGravity, 0);
 		}
@@ -337,11 +379,11 @@ public class PlayerController : MonoBehaviour {
     curPowers["Shield"] = true;
     // Turn on shield effect on player = blue glow
     transform.GetChild(0).gameObject.SetActive(true);
+    // update current score because of the pickup
+    updateScore(powerUpScore);
   }
   void useShield()
   {
-    // increment score
-    incrementScore();
     // Make the player jump "off" of closest cube z position
     jump(findClosestCube());
     // Instantiate Gem Explosion in the same position of the picked Gem.

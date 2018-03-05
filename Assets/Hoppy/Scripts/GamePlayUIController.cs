@@ -36,6 +36,9 @@ public class GamePlayUIController : MonoBehaviour {
 	// Game Name UI Text
 	public Text gameNameText;
 
+	// A reference to the Player script.
+	public PlayerController playerScript;
+
 	// A reference to all game over panels (Rewarded Video, Free Gifts, New Model, Rate Us and Promotion).
 	public RectTransform[] gameOverPanels;
 	// A reference to the No Enough Gems Group of Elemnts (On New Model Panel).
@@ -113,8 +116,8 @@ public class GamePlayUIController : MonoBehaviour {
 		int bestScore = PlayerPrefs.GetInt("Best Score");
 		if (score > bestScore)
 		{
-			PlayerPrefs.SetInt ("Best Score", score);
-			updateBestScoreUITexts (score);
+			PlayerPrefs.SetInt ("Best Score", playerScript.score);
+			updateBestScoreUITexts (playerScript.score);
 		}
 		else
 		{
