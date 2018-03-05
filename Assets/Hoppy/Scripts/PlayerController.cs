@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour {
 	// Jump distance in Z Axis.
 	private float jumpDistance = 4f;
 	// Jump Height in Y Axis.
-	private float jumpHeight = 2.0f;
+	private float jumpHeight = 4.0f;
 	// Minimum gravity -> minimum speed.
 	private float minGravity = -35;
 	// Maximum gravity -> maximum speed.
@@ -76,12 +76,17 @@ public class PlayerController : MonoBehaviour {
 	{
 		// Control sliding using touch input and keyboard.
 		controlSliding ();
+    //controlHeight();
 		// Control player rotation.
 		controlBallRotation ();
-
-		// Check whether game is over or not.
-		checkGameOver ();
 	}
+
+  void FixedUpdate ()
+  {
+    // This is called in FixedUpdate because of DontGoThroughThings
+    // Check whether game is over or not
+    checkGameOver ();
+  }
 
 	#endregion
 
@@ -126,9 +131,6 @@ public class PlayerController : MonoBehaviour {
   			// Update UI and gameOver boolean.
   			uiController.onGameOver ();
   			gameOver = true;
-
-          Debug.Log(" Game Over True");
-
 
   			// Destroy Player Game Object after 1 seconds.
   			Destroy (gameObject, 1f);
@@ -214,7 +216,7 @@ public class PlayerController : MonoBehaviour {
     void jump(GameObject go)
     {
       // Default Y position if the Player is touching the top of a Cube.
-      float defultYPos = GetComponent<Collider>().bounds.size.y / 2 + go.gameObject.GetComponent<Collider>().bounds.size.y / 2;
+      float defultYPos = GetComponent<Collider>().bounds.size.y / 2 + go.gameObject.GetComponent<Collider>().bounds.size.y / 2 + go.gameObject.transform.position.y;
 
       // Correct any position error due to late collision detection.
       transform.position = new Vector3(transform.position.x, defultYPos, go.gameObject.transform.position.z);
@@ -235,6 +237,8 @@ public class PlayerController : MonoBehaviour {
 
         }
 
+
+          jumpHeight = 4.0f - go.transform.position.y;
 
 // Get the current gravity value.
       float g = Physics.gravity.magnitude;

@@ -750,7 +750,15 @@ Prefab:
         type: 2}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 4300000, guid: 7b74b4d0f9ac00a418d21be6310bedc9, type: 3}
+      objectReference: {fileID: 4300000, guid: d959d8b37f229d140b4fab6a1b505332, type: 3}
+    - target: {fileID: 1880300604511628, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1692485700064142, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 910ee4b3cb7151945a089c9a83be7aeb, type: 2}
   m_IsPrefabParent: 0
@@ -801,8 +809,9 @@ GameObject:
   - component: {fileID: 838441950}
   - component: {fileID: 838441955}
   - component: {fileID: 838441954}
+  - component: {fileID: 838441957}
   - component: {fileID: 838441956}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -895,6 +904,7 @@ MonoBehaviour:
   powerUps:
   - Shield
   slidingSpeed: 1
+  heightSpeed: 1
   uiController: {fileID: 1530382542}
   blackMaterial: {fileID: 2100000, guid: fdca0da1b69ece24ba2bc506085a3474, type: 2}
   whiteMaterial: {fileID: 2100000, guid: b4e9e460c7488eb48bcb32d3789480e4, type: 2}
@@ -995,6 +1005,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &838441957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 838441949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f38fa5fa50e1a642bc003ac2d0a5784, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sendTriggerMessage: 0
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 4294967039
+  skinWidth: 0.5
 --- !u!1 &859337248
 GameObject:
   m_ObjectHideFlags: 0
@@ -1532,7 +1558,7 @@ MonoBehaviour:
   horizontalSpeed: 1
   slidingSpeed: 2
   margin: 1
-  xPositions: fdffffff0000000003000000
+  xPositions: feffffff0000000002000000
   lengthOfTheCubes: 4
   player: {fileID: 838441949}
 --- !u!65 &1410692904

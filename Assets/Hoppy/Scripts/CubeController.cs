@@ -56,6 +56,8 @@ public class CubeController : MonoBehaviour {
 	// A float number which is used to keep the displacement between this game object and the the player constant.
 	private float offset;
 
+	private float cubeSpawnHeight = 0.0f;
+
 	#endregion
 
 
@@ -231,7 +233,9 @@ public class CubeController : MonoBehaviour {
 	{
 		// A variable changes the speed according to the height of the cube
 		float relativeSpeed;
-			while (instantiatedCube.transform.position.y >= 0.1f)
+		cubeSpawnHeight = UnityEngine.Random.Range(0.0f, 2.0f);
+			while (instantiatedCube.transform.position.y >= cubeSpawnHeight + 0.1f)
+			//while (instantiatedCube.transform.position.y >= 0.1f)
 			{
 				// Change the speed according to the height of the cube.
 				if (instantiatedCube.transform.position.y <= 0.5f)
@@ -245,7 +249,7 @@ public class CubeController : MonoBehaviour {
 
 			// Adjust the postion of the cube
 			instantiatedCube.transform.position = new Vector3(instantiatedCube.transform.position.x,
-				0,
+				cubeSpawnHeight,
 				instantiatedCube.transform.position.z
 			);
 

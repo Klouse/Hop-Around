@@ -17,6 +17,7 @@ public class CameraController : MonoBehaviour {
 	private Vector3 offset;
 	// The magnitude of the limit of Camera X position.
 	private float xPosLimit = 1.5f;
+	private Vector3 pos;
 
 	#endregion
 
@@ -26,10 +27,10 @@ public class CameraController : MonoBehaviour {
 
 	void Start ()
 	{
-		// The distance between Camera position and the Player Position. 
+		// The distance between Camera position and the Player Position.
 		offset = transform.position - player.transform.position;
 	}
-	
+
 	void LateUpdate ()
 	{
 		// LateUpdate is called after all Update functions have been called.
@@ -37,12 +38,12 @@ public class CameraController : MonoBehaviour {
 		// It tracks objects (Player) that might have moved inside Update.
 
 
-		
+
 		// Make the Camera follows the Player position on X and Z Axis.
 		// And clamp the Camera's X position between - xPosLimit and xPosLimit.
 		if (player != null)
-			transform.position = new Vector3 (Mathf.Clamp(player.transform.position.x + offset.x, -xPosLimit, xPosLimit), transform.position.y, player.transform.position.z + offset.z);
-		
+			pos = new Vector3 (Mathf.Clamp(player.transform.position.x + offset.x, -xPosLimit, xPosLimit), transform.position.y, player.transform.position.z + offset.z);
+			transform.position = Vector3.Lerp (transform.position, pos, Time.deltaTime * 3.0f);
 	}
 
 	#endregion
