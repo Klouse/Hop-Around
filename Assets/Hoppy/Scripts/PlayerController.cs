@@ -195,7 +195,7 @@ public class PlayerController : MonoBehaviour {
             // Collision detected with a pick up (Gem) Object.
 
             // update current score with gem value
-            updateScore(powerUpScore);
+            updateScore(powerUpScore + 50);
 
             // Deactivate The Gem Object.
             col.gameObject.SetActive(false);
@@ -235,16 +235,16 @@ public class PlayerController : MonoBehaviour {
         {
 		if (PlayerPrefs.GetString("dark") == "Off")
 		{
-			go.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = blackMaterial;
+			go.gameObject.transform.GetChild(1).gameObject.GetComponent<Renderer>().material = blackMaterial;
       StartCoroutine(fadeCube(go));
 		}
 		else
 		{
-			go.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = whiteMaterial;
+			go.gameObject.transform.GetChild(1).gameObject.GetComponent<Renderer>().material = whiteMaterial;
       StartCoroutine(fadeCube(go));
 		}
           // Show Boundary Cube.
-          go.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+          go.gameObject.transform.GetChild(1).gameObject.SetActive(true);
 
         }
 
@@ -314,7 +314,7 @@ public class PlayerController : MonoBehaviour {
     // fade out boundary cube
     IEnumerator fadeCube(GameObject cube)
   	{
-      var material = cube.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer>().material;
+      var material = cube.gameObject.transform.GetChild(1).gameObject.GetComponent<Renderer>().material;
       var color = material.color;
       while(color.a > 0.0f)
       {

@@ -145,7 +145,7 @@ public class CubeController : MonoBehaviour {
 				instantiatedCube.name = "pCube";
 			}
 			// Set the Default current color to the cube.
-			instantiatedCube.GetComponentInChildren<Renderer>().material.color = currentColor;
+			instantiatedCube.transform.GetChild(0).GetComponentInChildren<Renderer>().material.color = currentColor;
 
 			// Access the next element in the array.
 			instantiatedCubes[i + 1] = instantiatedCube;
@@ -211,13 +211,13 @@ public class CubeController : MonoBehaviour {
 		// Dequeue a cube from the queue to be used and set a color to the cube and put it in a certain position.
 		GameObject instantiatedCube = queueOfCubes.Dequeue();
 		instantiatedCube.transform.position = place;
-		instantiatedCube.GetComponent<Renderer>().material.color = currentColor; // currentColor comes from changeColor()
+		instantiatedCube.transform.GetChild(0).GetComponent<Renderer>().material.color = currentColor; // currentColor comes from changeColor()
 		instantiatedCube.SetActive(true);
 
 		// Check if the power will be turned on or not.
 		// Skillz Random
-		int randomNumberToSpawnPowers = UnityEngine.Random.Range(0,11);
-		if (randomNumberToSpawnPowers >= 0)
+		int randomNumberToSpawnPowers = UnityEngine.Random.Range(0,100);
+		if (randomNumberToSpawnPowers <= 15)
 		{
 			powerInstantiated = true;
 			GameObject i = itemPicker();
@@ -291,13 +291,23 @@ public class CubeController : MonoBehaviour {
 	{
 		// Pick an item in the list
 		// Skillz random
-		int randomItem = UnityEngine.Random.Range(0, listOfItems.Count-1);
-		if (randomItem == 0)
+		int randomItem = UnityEngine.Random.Range(0, listOfItems.Count);
+		GameObject i;
+		i = listOfItems[randomItem];
+		// make sure the gameobject you picked isn't active
+		while(i.activeSelf)
 		{
-			return listOfItems[0];
-		}else{
-			return listOfItems[1];
+			// pick a new number. This will change to something more advanced.
+			if (randomItem == 0)
+			{
+				i = listOfItems[1];
+			}
+			else
+			{
+				i = listOfItems[0];
+			}
 		}
+		return i;
 	}
 	#endregion
 
@@ -321,7 +331,7 @@ public class CubeController : MonoBehaviour {
 		} while (randomColor == currentColor);
 		currentColor = randomColor;
 
-		GameObject[] activeCubes = GameObject.FindGameObjectsWithTag("cube");
+		GameObject[] activeCubes = GameObject.FindGameObjectsWithTag("cubeModel");
 		// Changing the color of the cubes.
 		foreach(GameObject cube in activeCubes)
 		{
@@ -358,8 +368,8 @@ public class CubeController : MonoBehaviour {
 			// Enqueue this cube to the cubes' queue.
 			if (other.gameObject.name == "Cube")
 			queueOfCubes.Enqueue(other.gameObject);
-			// Disable the child of the cube to.
-			other.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+			// Disable the child of the cube too.
+			other.gameObject.transform.GetChild(1).gameObject.SetActive(false);
 
 			// Disable the cube game object.
 			other.gameObject.SetActive(false);
