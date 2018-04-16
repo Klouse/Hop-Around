@@ -190,7 +190,7 @@ public class PlayerController : MonoBehaviour {
           // Make the player jump
           jump(col.gameObject);
         }
-        if (col.tag == "Gem")
+        if (col.tag == "Gem_Pickup")
         {
             // Collision detected with a pick up (Gem) Object.
 
@@ -377,7 +377,7 @@ public class PlayerController : MonoBehaviour {
     // turns on powerUp
     // set sheild to true
     curPowers["Shield"] = true;
-    // Turn on shield effect on player = blue glow
+    // Turn on shield effect on player (blue glow)
     transform.GetChild(0).gameObject.SetActive(true);
     // update current score because of the pickup
     updateScore(powerUpScore);
@@ -394,8 +394,24 @@ public class PlayerController : MonoBehaviour {
 
     // set shield to false
     curPowers["Shield"] = false;
-    // Turn on shield effect on player = blue glow
+    // Turn off shield effect on player (blue glow)
     transform.GetChild(0).gameObject.SetActive(false);
+  }
+  public bool isPowerActive(string power)
+  {
+    try{
+      string p = power.Remove(power.Length - 7);
+      if (curPowers[p] == true)
+      {
+        return true;
+      }else
+      {
+        return false;
+      }
+    }catch {
+      Debug.Log("pickup not a power");
+      return false;
+    }
   }
   #endregion
 }

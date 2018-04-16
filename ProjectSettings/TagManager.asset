@@ -11,6 +11,7 @@ TagManager:
   - Gem
   - Shield_Pickup
   - cubeModel
+  - Gem_Pickup
   layers:
   - Default
   - TransparentFX

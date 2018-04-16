@@ -1423,7 +1423,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cube: {fileID: 495741524}
-  boundaryCube: {fileID: 0}
   numberOfInstantiatedCubes: 15
   items:
   - {fileID: 1381869049522700, guid: bfe3bc43cdfd1074197deddf32b0c536, type: 2}
@@ -1439,6 +1438,7 @@ MonoBehaviour:
   xPositions: fdffffff0000000003000000
   lengthOfTheCubes: 4
   player: {fileID: 838441949}
+  playerController: {fileID: 838441954}
 --- !u!65 &1410692904
 BoxCollider:
   m_ObjectHideFlags: 0

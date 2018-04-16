@@ -24,6 +24,8 @@ public class CubeController : MonoBehaviour {
 	public GameObject[] items;
 	// List of items
 	private List<GameObject> listOfItems = new List<GameObject>();
+	// Dictionary of all obtainable items and if they are active
+  private Dictionary<string, bool> itemState = new Dictionary<string, bool>();
 
 	// Color of the cubes.
 	public Color currentColor;
@@ -55,6 +57,8 @@ public class CubeController : MonoBehaviour {
 
 	// A reference to a player game object.
 	public GameObject player;
+	// A reference to the player controller script
+	public PlayerController playerController;
 	// A float number which is used to keep the displacement between this game object and the the player constant.
 	private float offset;
 
@@ -80,12 +84,16 @@ public class CubeController : MonoBehaviour {
 		// Intialize and create cubes.
 		StartCoroutine(OnStart());
 
-		// Intialize and create powers.
+		// Intialize and create pickup items.
 		for (int i= 0;i < items.Length; i++)
 		{
 			GameObject instantiatedItem = Instantiate(items[i]);
+			// Set game object inactive
 			instantiatedItem.SetActive(false);
+			// add items to the available items list
 			listOfItems.Add(instantiatedItem);
+			// setup the item state manager
+			itemState.Add(instantiatedItem.tag, false);
 		}
 
 	}
@@ -95,11 +103,6 @@ public class CubeController : MonoBehaviour {
 		// To keep the displacement in z-axis between this object and the player game object constant.
 		if (player != null)
 			transform.position = new Vector3(transform.position.x, transform.position.y, player.transform.position.z + offset);
-
-	}
-
-	void FixedUpdate()
-	{
 
 	}
 
@@ -219,11 +222,14 @@ public class CubeController : MonoBehaviour {
 		int randomNumberToSpawnPowers = UnityEngine.Random.Range(0,100);
 		if (randomNumberToSpawnPowers <= 15)
 		{
-			powerInstantiated = true;
-			GameObject i = itemPicker();
-			i.transform.position = new Vector3(instantiatedCube.transform.position.x, instantiatedCube.transform.position.y + 0.6f, instantiatedCube.transform.position.z);
-			i.transform.parent = instantiatedCube.transform;
-			i.SetActive(true);
+			GameObject i = itemPick();
+			if (i != null)
+			{
+				powerInstantiated = true;
+				i.transform.position = new Vector3(instantiatedCube.transform.position.x, instantiatedCube.transform.position.y + 0.6f, instantiatedCube.transform.position.z);
+				i.transform.parent = instantiatedCube.transform;
+				i.SetActive(true);
+			}
 		}
 
  		// Increment row counter
@@ -287,27 +293,34 @@ public class CubeController : MonoBehaviour {
 	#endregion
 
 	#region item
-	GameObject itemPicker()
+	GameObject itemPick()
 	{
 		// Pick an item in the list
 		// Skillz random
 		int randomItem = UnityEngine.Random.Range(0, listOfItems.Count);
-		GameObject i;
-		i = listOfItems[randomItem];
-		// make sure the gameobject you picked isn't active
-		while(i.activeSelf)
+		GameObject g;
+		g = listOfItems[randomItem];
+		// if power is active on player, or item is active for pickup, don't spawn it
+		if (playerController.isPowerActive(g.tag) == true || itemState[g.tag] == true)
 		{
-			// pick a new number. This will change to something more advanced.
-			if (randomItem == 0)
-			{
-				i = listOfItems[1];
-			}
-			else
-			{
-				i = listOfItems[0];
-			}
+			return null;
+		}else
+		{
+			itemActivate(g);
+			return g;
 		}
-		return i;
+	}
+
+	void itemActivate(GameObject g)
+	{
+		// Item is active on a cube on screen
+		itemState[g.tag] = true;
+	}
+
+	void itemDeactivate(GameObject g)
+	{
+		// Item is no longer on screen
+ 		itemState[g.tag] = false;
 	}
 	#endregion
 
@@ -368,8 +381,20 @@ public class CubeController : MonoBehaviour {
 			// Enqueue this cube to the cubes' queue.
 			if (other.gameObject.name == "Cube")
 			queueOfCubes.Enqueue(other.gameObject);
-			// Disable the child of the cube too.
-			other.gameObject.transform.GetChild(1).gameObject.SetActive(false);
+			// Disable all of the children of the cube too.
+			for(int i=1; i<other.gameObject.transform.childCount; i++)
+			{
+				var child = other.gameObject.transform.GetChild(i).gameObject;
+				if(child != null)
+				{
+					// put all pickup items back in the inactive list before disabling
+					Debug.Log(child.tag.Substring(child.tag.Length-7));
+					if(child.tag.Substring(child.tag.Length-7) == "_Pickup")
+						itemDeactivate(child);
+
+					child.SetActive(false);
+				}
+			}
 
 			// Disable the cube game object.
 			other.gameObject.SetActive(false);
