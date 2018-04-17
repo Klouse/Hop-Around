@@ -20,8 +20,12 @@ public class CubeController : MonoBehaviour {
 	// Queue of the cubes
 	private Queue<GameObject> queueOfCubes = new Queue<GameObject>();
 
-	// A reference to the power game object.
-	public GameObject powers;
+	// A reference to the items game object.
+	public GameObject[] items;
+	// List of items
+	private List<GameObject> listOfItems = new List<GameObject>();
+	// Dictionary of all obtainable items and if they are active
+  private Dictionary<string, bool> itemState = new Dictionary<string, bool>();
 
 	// Color of the cubes.
 	public Color currentColor;
@@ -53,6 +57,8 @@ public class CubeController : MonoBehaviour {
 
 	// A reference to a player game object.
 	public GameObject player;
+	// A reference to the player controller script
+	public PlayerController playerController;
 	// A float number which is used to keep the displacement between this game object and the the player constant.
 	private float offset;
 
@@ -77,16 +83,19 @@ public class CubeController : MonoBehaviour {
 		FillColors();
 		// Intialize and create cubes.
 		StartCoroutine(OnStart());
-/*
-		// Intialize and create powers.
-		for (int i= 0;i <= 9; i++)
+
+		// Intialize and create pickup items.
+		for (int i= 0;i < items.Length; i++)
 		{
-			GameObject instantiatedPowers = Instantiate(powers);
-			instantiatedPowers.SetActive(false);
-			instantiatedPowers.name = "Power";
-			queueOfPowers.Enqueue(instantiatedPowers);
+			GameObject instantiatedItem = Instantiate(items[i]);
+			// Set game object inactive
+			instantiatedItem.SetActive(false);
+			// add items to the available items list
+			listOfItems.Add(instantiatedItem);
+			// setup the item state manager
+			itemState.Add(instantiatedItem.tag, false);
 		}
-		*/
+
 	}
 
 	void LateUpdate()
@@ -94,11 +103,6 @@ public class CubeController : MonoBehaviour {
 		// To keep the displacement in z-axis between this object and the player game object constant.
 		if (player != null)
 			transform.position = new Vector3(transform.position.x, transform.position.y, player.transform.position.z + offset);
-
-	}
-
-	void FixedUpdate()
-	{
 
 	}
 
@@ -144,7 +148,7 @@ public class CubeController : MonoBehaviour {
 				instantiatedCube.name = "pCube";
 			}
 			// Set the Default current color to the cube.
-			instantiatedCube.GetComponentInChildren<Renderer>().material.color = currentColor;
+			instantiatedCube.transform.GetChild(0).GetComponentInChildren<Renderer>().material.color = currentColor;
 
 			// Access the next element in the array.
 			instantiatedCubes[i + 1] = instantiatedCube;
@@ -191,6 +195,7 @@ public class CubeController : MonoBehaviour {
 
 		// Boolean value to check if the power is instantiated or not.
 		bool powerInstantiated = false;
+		bool itemInstantiated = false;
 
 
 		// Adjust  the position for the cubes that will be spawned.
@@ -209,16 +214,22 @@ public class CubeController : MonoBehaviour {
 		// Dequeue a cube from the queue to be used and set a color to the cube and put it in a certain position.
 		GameObject instantiatedCube = queueOfCubes.Dequeue();
 		instantiatedCube.transform.position = place;
-		instantiatedCube.GetComponent<Renderer>().material.color = currentColor; // currentColor comes from changeColor()
+		instantiatedCube.transform.GetChild(0).GetComponent<Renderer>().material.color = currentColor; // currentColor comes from changeColor()
 		instantiatedCube.SetActive(true);
 
 		// Check if the power will be turned on or not.
 		// Skillz Random
-		int randomNumberToSpawnPowers = UnityEngine.Random.Range(0,11);
-		if (randomNumberToSpawnPowers >= 10)
+		int randomNumberToSpawnPowers = UnityEngine.Random.Range(0,100);
+		if (randomNumberToSpawnPowers <= 15)
 		{
-			powerInstantiated = true;
-			instantiatedCube.transform.Find("ShieldPickup").gameObject.SetActive(true);
+			GameObject i = itemPick();
+			if (i != null)
+			{
+				powerInstantiated = true;
+				i.transform.position = new Vector3(instantiatedCube.transform.position.x, instantiatedCube.transform.position.y + 0.6f, instantiatedCube.transform.position.z);
+				i.transform.parent = instantiatedCube.transform;
+				i.SetActive(true);
+			}
 		}
 
  		// Increment row counter
@@ -281,6 +292,38 @@ public class CubeController : MonoBehaviour {
 
 	#endregion
 
+	#region item
+	GameObject itemPick()
+	{
+		// Pick an item in the list
+		// Skillz random
+		int randomItem = UnityEngine.Random.Range(0, listOfItems.Count);
+		GameObject g;
+		g = listOfItems[randomItem];
+		// if power is active on player, or item is active for pickup, don't spawn it
+		if (playerController.isPowerActive(g.tag) == true || itemState[g.tag] == true)
+		{
+			return null;
+		}else
+		{
+			itemActivate(g);
+			return g;
+		}
+	}
+
+	void itemActivate(GameObject g)
+	{
+		// Item is active on a cube on screen
+		itemState[g.tag] = true;
+	}
+
+	void itemDeactivate(GameObject g)
+	{
+		// Item is no longer on screen
+ 		itemState[g.tag] = false;
+	}
+	#endregion
+
 
 
 	#region Colors' functions
@@ -301,7 +344,7 @@ public class CubeController : MonoBehaviour {
 		} while (randomColor == currentColor);
 		currentColor = randomColor;
 
-		GameObject[] activeCubes = GameObject.FindGameObjectsWithTag("cube");
+		GameObject[] activeCubes = GameObject.FindGameObjectsWithTag("cubeModel");
 		// Changing the color of the cubes.
 		foreach(GameObject cube in activeCubes)
 		{
@@ -338,8 +381,20 @@ public class CubeController : MonoBehaviour {
 			// Enqueue this cube to the cubes' queue.
 			if (other.gameObject.name == "Cube")
 			queueOfCubes.Enqueue(other.gameObject);
-			// Disable the child of the cube to.
-			other.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+			// Disable all of the children of the cube too.
+			for(int i=1; i<other.gameObject.transform.childCount; i++)
+			{
+				var child = other.gameObject.transform.GetChild(i).gameObject;
+				if(child != null)
+				{
+					// put all pickup items back in the inactive list before disabling
+					Debug.Log(child.tag.Substring(child.tag.Length-7));
+					if(child.tag.Substring(child.tag.Length-7) == "_Pickup")
+						itemDeactivate(child);
+
+					child.SetActive(false);
+				}
+			}
 
 			// Disable the cube game object.
 			other.gameObject.SetActive(false);
