@@ -58,6 +58,8 @@ public class SettingsController : MonoBehaviour {
 		// Check dark + sound status and change button sprites accordingly.
 		string sound = PlayerPrefs.GetString("sound");
 		string darkMode = PlayerPrefs.GetString("dark");
+		Debug.Log("Sound = " + sound);
+		Debug.Log("Dark mode = " + darkMode);
 		if (sound == "On")
 		{
 			if (darkMode == "Off")
@@ -138,23 +140,30 @@ public class SettingsController : MonoBehaviour {
 	public void onSoundButtonClicked ()
 	{
 		string sound = PlayerPrefs.GetString("sound");
+		string darkMode = PlayerPrefs.GetString("dark");
 
 		if (sound == "Off")
 		{
-			// If sound was previously off:
-			// Then turn the sound on, change Sound Button sprites and play a SFX.
-
-			changeButtonSprites (soundButton, soundOnUnPressed, soundOnPressed);
+			if (darkMode == "Off")
+			{
+				changeButtonSprites (soundButton, soundOnUnPressed, soundOnPressed);
+			}
+			else
+			{
+				changeButtonSprites (soundButton, soundOnDarkUnPressed, soundOnDarkPressed);
+			}
 			PlayerPrefs.SetString("sound","On");
-
-			// You may play sound effect here.
 		}
 		else if (sound == "On")
 		{
-			// If sound was previously on:
-			// Then turn the sound off and change Sound Button sprites.
-
-			changeButtonSprites (soundButton, soundOffUnPressed, soundOffPressed);
+			if (darkMode == "Off")
+			{
+				changeButtonSprites (soundButton, soundOffUnPressed, soundOffPressed);
+			}
+			else
+			{
+				changeButtonSprites (soundButton, soundOffDarkUnPressed, soundOffDarkPressed);
+			}
 			PlayerPrefs.SetString("sound","Off");
 		}
 	}

@@ -23,7 +23,8 @@ public class PlayerController : MonoBehaviour {
   public string[] powerUps;
 
 	// Ball sliding speed in X Axis.
-  public float slidingSpeed;
+  private float slidingSpeed;
+
 	// The magnitude of the limit of Player X position.
 	private float xPosLimit = 5f;
 	// Jump distance in Z Axis.
@@ -74,6 +75,19 @@ public class PlayerController : MonoBehaviour {
 	#endregion
 
 
+  #region Debug section
+
+  // slider Speed - sliderbar
+  public void Slider_Changed(float newSpeed)
+  {
+    slidingSpeed = newSpeed;
+    uiController.updateSliderUITexts(newSpeed);
+    PlayerPrefs.SetFloat("Slider Speed", newSpeed);
+  }
+
+
+  #endregion
+
 
 	#region Unity Callbacks
 
@@ -81,6 +95,11 @@ public class PlayerController : MonoBehaviour {
 	{
 		// Turn off gravity until the Player starts to play.
 		Physics.gravity = new Vector3(0, 0, 0);
+
+    // Update Debug UI items
+    float speed = PlayerPrefs.GetFloat("Slider Speed");
+    uiController.updateSliderUITexts(speed);
+    uiController.updateSliderUISlider(speed);
 	}
 
 	void Update ()
@@ -135,7 +154,7 @@ public class PlayerController : MonoBehaviour {
 
 
   			// Update UI and gameOver boolean.
-  			uiController.onGameOver ();
+  			uiController.onGameOver();
   			gameOver = true;
 
           Debug.Log(" Game Over True");
@@ -168,7 +187,7 @@ public class PlayerController : MonoBehaviour {
 			{
 				// Control Sliding using Keyboard right and left arrow buttons.
 				float moveHorizontal = Input.GetAxis ("Horizontal");
-				transform.Translate(moveHorizontal * slidingSpeed * 0.2f, 0, 0);
+				transform.Translate(moveHorizontal * slidingSpeed * 0.3f, 0, 0);
 			}
 
 			// Clamp the Player's X position between - xPosLimit and xPosLimit.
@@ -307,8 +326,11 @@ public class PlayerController : MonoBehaviour {
     // plays sound if sound is enabled
     void playSound()
     {
-      AudioSource audio = GetComponent<AudioSource>();
-      audio.Play();
+  		string sound = PlayerPrefs.GetString("sound");
+      if (sound == "On"){
+        AudioSource audio = GetComponent<AudioSource>();
+        audio.Play();
+      }
     }
 
     // fade out boundary cube

@@ -66,6 +66,14 @@ public class GamePlayUIController : MonoBehaviour {
 
 	public Camera camera;  // used for background colors
 	public Color [] colors;
+
+	// Debug
+	public GameObject debugMenu;
+	public Button debugButton;
+	public Text sliderText;
+	public Slider slider;
+
+
 	#endregion
 
 
@@ -84,6 +92,10 @@ public class GamePlayUIController : MonoBehaviour {
 		int bestScore = PlayerPrefs.GetInt("Best Score");
 		updateBestScoreUITexts (bestScore);
 
+		// Update debug slider speed
+		float sliderSave = PlayerPrefs.GetFloat("Slider Speed");
+		updateSliderUITexts (sliderSave);
+
 		// Update Number of Gems displayed.
 		updateNumberOfGemsUITexts ();
 
@@ -93,6 +105,20 @@ public class GamePlayUIController : MonoBehaviour {
 
 	#endregion
 
+	#region Debug section
+
+	// Toggle Debug Menu
+	public void toggleDebugMenu()
+	{
+		if (debugMenu.activeInHierarchy)
+		{
+			debugMenu.SetActive(false);
+		}else{
+			debugMenu.SetActive(true);
+		}
+	}
+
+	#endregion
 
 
 	#region Game States Methods
@@ -160,6 +186,17 @@ public class GamePlayUIController : MonoBehaviour {
 		// Update Number of Gems displayed.
 		int numberOfGems = PlayerPrefs.GetInt ("NumberOfPickUps");
 		numberOfGemsText.text = "" + numberOfGems;
+	}
+
+	public void updateSliderUITexts (float speed)
+	{
+		// Update the debug slider Speed text
+		sliderText.text = speed.ToString("0.00");
+	}
+	public void updateSliderUISlider (float value)
+	{
+		// Update the slider value
+		slider.value = value;
 	}
 
 	void updateDarkMode()
