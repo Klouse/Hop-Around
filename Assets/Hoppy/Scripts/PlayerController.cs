@@ -256,7 +256,7 @@ public class PlayerController : MonoBehaviour {
 
       // Correct any position error due to late collision detection.
       transform.position = new Vector3(transform.position.x, defultYPos, go.gameObject.transform.position.z);
-        if (go.tag == "cube" && !curPowers["Shield"])
+        if (go.tag == "cube")
         {
 		if (PlayerPrefs.GetString("dark") == "Off")
 		{
