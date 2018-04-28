@@ -40,7 +40,7 @@ public class CubeController : MonoBehaviour {
 	// Margin.
 	public float margin;
 	// Array of the values to be used in the x positions.
-	public int[] xPositions;
+	public float[] xPositions;
 	// Displacement in z-axis between cubes.
 	public int lengthOfTheCubes;
 	// Intialize the z-axis point for the first cube.
@@ -119,7 +119,7 @@ public class CubeController : MonoBehaviour {
 		{
 			// For the first set of cubes, spawn in rows of three
 			// Choose a x position from the pre-determined x Positions.
-			int currentXPosition = xPositions[positionIncrement];
+			float currentXPosition = xPositions[positionIncrement];
 
 			// Add a margin to the choosen position.
 			//float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
@@ -202,7 +202,7 @@ public class CubeController : MonoBehaviour {
 		// Skillz Random
 		actualZPosition = actualZPosition + lengthOfTheCubes;
 		int randomSelectionForXPosition = UnityEngine.Random.Range(0, xPositions.Length);
-		int currentXPosition = xPositions[randomSelectionForXPosition];
+		float currentXPosition = xPositions[randomSelectionForXPosition];
 		float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
 		Vector3 place = new Vector3
 			(actualXPosition,
