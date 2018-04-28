@@ -70,6 +70,11 @@ public class StartScreenUIController : MonoBehaviour {
 
 	#region Unity Callbacks
 
+	void Start()
+	{
+		checkLaunchStatus ();
+	}
+
 	void Awake ()
 	{
 		// Activate the Start menu Only and deactivate the others.
@@ -91,7 +96,46 @@ public class StartScreenUIController : MonoBehaviour {
 
 	#endregion
 
+	#region Supporting Methods
 
+	void checkLaunchStatus()
+	{
+		string hasLaunchedBefore = PlayerPrefs.GetString("HasLaunchedBefore");
+		if (hasLaunchedBefore != "Yes")
+		{
+			// First time to launch the Game!
+			// Initialize All Player Preferences.
+
+			// Some of the following Player Preference may be very useful for analytics data.
+
+			// A string Shows if the game has been launched before or not.
+			PlayerPrefs.SetString("HasLaunchedBefore", "Yes");
+
+			// An integer shows how many times the player has launched the game.
+			PlayerPrefs.SetInt("LaunchCounter", 1);
+			// An integer shows how many times the player has played.
+			PlayerPrefs.SetInt("GamesPlayed", 0);
+			// A string shows if the user has enabled the sound or not.
+			PlayerPrefs.SetString("sound", "On");
+			// An integer shows the best score the player got so far.
+			PlayerPrefs.SetInt("Best Score", 0);
+			// An integer shows how many pick ups the player has.
+			PlayerPrefs.SetInt("NumberOfPickUps", 0);
+			// Dark mode toggle -- starts off
+			PlayerPrefs.SetString("dark", "Off");
+		}
+		else
+		{
+			// Game has been launched before!
+
+			// Increasing number of Lanuches.
+			int launchCounter = PlayerPrefs.GetInt("LaunchCounter");
+			launchCounter++;
+			PlayerPrefs.SetInt("LaunchCounter", launchCounter);
+		}
+	}
+
+	#endregion
 
 	#region Game States Methods
 
