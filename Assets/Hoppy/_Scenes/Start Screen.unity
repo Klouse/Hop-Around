@@ -756,10 +756,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gemsExplosion: {fileID: 1000012160138410, guid: 98576b417133d418bb0e29ac07791c03,
     type: 2}
-  slidingSpeed: 0.007
+  shieldExplosion: {fileID: 0}
+  shield: {fileID: 0}
+  powerUps: []
   uiController: {fileID: 0}
   blackMaterial: {fileID: 2100000, guid: fdca0da1b69ece24ba2bc506085a3474, type: 2}
   whiteMaterial: {fileID: 2100000, guid: b4e9e460c7488eb48bcb32d3789480e4, type: 2}
+  fadeTimeWait: 0
+  fadeAmount: 0
+  score: 0
+  scrMultiplier: 1
+  scoreUpdateDuration: 0.2
 --- !u!54 &838441955
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1123,7 +1130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cube: {fileID: 495741524}
   numberOfInstantiatedCubes: 15
-  gems: {fileID: 1000014208981860, guid: 145a5acfddba747b19e0a696f91a11a4, type: 2}
+  items: []
   currentColor: {r: 0.098039225, g: 0.94117653, b: 0.38431376, a: 1}
   colorsOfTheCube:
   - {r: 1, g: 0.09019608, b: 0.16862746, a: 1}
@@ -1131,10 +1138,14 @@ MonoBehaviour:
   - {r: 0.050980393, g: 0.60784316, b: 1, a: 1}
   horizontalSpeed: 1
   slidingSpeed: 2
-  margin: 1
-  xPositions: fdffffff0000000003000000
+  margin: 0.25
+  xPositions:
+  - -2.25
+  - 0
+  - 2.25
   lengthOfTheCubes: 4
   player: {fileID: 838441949}
+  playerController: {fileID: 0}
 --- !u!65 &1410692904
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1681,7 +1692,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 70
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
