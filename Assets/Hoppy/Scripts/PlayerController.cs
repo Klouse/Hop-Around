@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using System;
 
 
@@ -96,10 +97,15 @@ public class PlayerController : MonoBehaviour {
 		// Turn off gravity until the Player starts to play.
 		Physics.gravity = new Vector3(0, 0, 0);
 
-    // Update Debug UI items
-    float speed = PlayerPrefs.GetFloat("Slider Speed");
-    uiController.updateSliderUITexts(speed);
-    uiController.updateSliderUISlider(speed);
+    Scene currentScene = SceneManager.GetActiveScene();
+    if (currentScene.name == "GamePlay")
+    {
+      // Update Debug UI items
+      float speed = PlayerPrefs.GetFloat("Slider Speed");
+      uiController.updateSliderUITexts(speed);
+      uiController.updateSliderUISlider(speed);
+    }
+
 	}
 
 	void Update ()
