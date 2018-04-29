@@ -19,9 +19,6 @@ public class StartScreenUIController : MonoBehaviour {
 	[HideInInspector]
 	public int score;
 
-	// A reference to Number of Gems UI Text.
-	public Text numberOfGemsText;
-
 	// Starting Menu - Shown before the game is started.
 	public GameObject startMenu;
 	// Game Menu - Shown during the game is played.
@@ -38,12 +35,6 @@ public class StartScreenUIController : MonoBehaviour {
 
 	// A reference to all game over panels (Rewarded Video, Free Gifts, New Model, Rate Us and Promotion).
 	public RectTransform[] gameOverPanels;
-	// A reference to the No Enough Gems Group of Elemnts (On New Model Panel).
-	public GameObject noEnoughGems;
-	// A reference to the Enough Gems Group of Elemnts (On New Model Panel).
-	public GameObject EnoughGems;
-	// A reference to Number of Remaining Gems UI Text.
-	public Text numberOfRemainingGemsText;
 
 	public Button settingsButton;
 	public Sprite settingsUnPressed;
@@ -63,6 +54,9 @@ public class StartScreenUIController : MonoBehaviour {
 
 	public Camera camera;  // used for background colors
 	public Color [] colors;
+
+	// Minimum gravity -> minimum speed.
+	private float minGravity = -35;
 
 	#endregion
 
@@ -86,9 +80,6 @@ public class StartScreenUIController : MonoBehaviour {
 		// Update Best Score Texts.
 		int bestScore = PlayerPrefs.GetInt("Best Score");
 		updateBestScoreUITexts (bestScore);
-
-		// Update Number of Gems displayed.
-		updateNumberOfGemsUITexts ();
 
 		// Update colors for dark Model
 		updateDarkMode();
@@ -197,13 +188,6 @@ public class StartScreenUIController : MonoBehaviour {
 		}
 	}
 
-	public void updateNumberOfGemsUITexts ()
-	{
-		// Update Number of Gems displayed.
-		int numberOfGems = PlayerPrefs.GetInt ("NumberOfPickUps");
-		numberOfGemsText.text = "" + numberOfGems;
-	}
-
 	void updateDarkMode()
 	{
 		string darkMode = PlayerPrefs.GetString("dark");
@@ -219,8 +203,6 @@ public class StartScreenUIController : MonoBehaviour {
 				scoreTexts[i].color = colors[1];
 				bestScoreTexts[i].color = colors[1];
 			}
-			// set gem text color -- always opposite of backgound
-			numberOfGemsText.color = colors[1];
 			// set game name text color -- always opposite of background
 			gameNameText.color = colors[1];
 			// set submit button colors
@@ -239,8 +221,6 @@ public class StartScreenUIController : MonoBehaviour {
 				scoreTexts[i].color = colors[0];
 				bestScoreTexts[i].color = colors[0];
 			}
-			// set gem text color -- always opposite of backgound
-			numberOfGemsText.color = colors[0];
 			// set game name text color -- always opposite of background
 			gameNameText.color = colors[0];
 			// set submit button colors
