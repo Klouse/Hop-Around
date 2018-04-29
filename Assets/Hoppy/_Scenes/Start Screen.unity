@@ -1115,8 +1115,11 @@ MonoBehaviour:
   - {r: 0.050980393, g: 0.60784316, b: 1, a: 1}
   horizontalSpeed: 1
   slidingSpeed: 2
-  margin: 1
-  xPositions: fdffffff0000000003000000
+  margin: 0.25
+  xPositions:
+  - -2.25
+  - 0
+  - 2.25
   lengthOfTheCubes: 4
   player: {fileID: 838441949}
   playerController: {fileID: 0}
@@ -1661,7 +1664,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 70
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
