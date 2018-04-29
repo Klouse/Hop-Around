@@ -52,6 +52,9 @@ public class PlayerController : MonoBehaviour {
 	// A reference to the GamePlay UI Controller script.
 	public GamePlayUIController uiController;
 
+  // Store our current scene
+  public Scene currentScene;
+
   public Material blackMaterial;
   public Material whiteMaterial;
 
@@ -94,12 +97,11 @@ public class PlayerController : MonoBehaviour {
 
 	void Start ()
 	{
-		// Turn off gravity until the Player starts to play.
-		Physics.gravity = new Vector3(0, 0, 0);
-
-    Scene currentScene = SceneManager.GetActiveScene();
-    if (currentScene.name == "GamePlay")
+    currentScene = SceneManager.GetActiveScene();
+    if(currentScene.name == "GamePlay")
     {
+      // Turn off gravity until the Player starts to play.
+  		Physics.gravity = new Vector3(0, 0, 0);
       // Update Debug UI items
       float speed = PlayerPrefs.GetFloat("Slider Speed");
       uiController.updateSliderUITexts(speed);
@@ -215,6 +217,10 @@ public class PlayerController : MonoBehaviour {
           // Make the player jump
           jump(col.gameObject);
         }
+        else if (currentScene.name == "Start Screen" && col.gameObject.tag == "cube")
+        {
+          jumpInPlace(col.gameObject);
+        }
         if (col.tag == "Gem_Pickup")
         {
             // Collision detected with a pick up (Gem) Object.
@@ -258,16 +264,16 @@ public class PlayerController : MonoBehaviour {
       transform.position = new Vector3(transform.position.x, defultYPos, go.gameObject.transform.position.z);
         if (go.tag == "cube")
         {
-		if (PlayerPrefs.GetString("dark") == "Off")
-		{
-			go.gameObject.transform.GetChild(1).gameObject.GetComponent<Renderer>().material = blackMaterial;
-      StartCoroutine(fadeCube(go));
-		}
-		else
-		{
-			go.gameObject.transform.GetChild(1).gameObject.GetComponent<Renderer>().material = whiteMaterial;
-      StartCoroutine(fadeCube(go));
-		}
+      		if (PlayerPrefs.GetString("dark") == "Off")
+      		{
+      			go.gameObject.transform.GetChild(1).gameObject.GetComponent<Renderer>().material = blackMaterial;
+            StartCoroutine(fadeCube(go));
+      		}
+      		else
+      		{
+      			go.gameObject.transform.GetChild(1).gameObject.GetComponent<Renderer>().material = whiteMaterial;
+            StartCoroutine(fadeCube(go));
+      		}
           // Show Boundary Cube.
           go.gameObject.transform.GetChild(1).gameObject.SetActive(true);
 
@@ -284,6 +290,48 @@ public class PlayerController : MonoBehaviour {
       float vSpeed = totalTime * g / 2;
 // Calculate the forward speed required to jump specific Distance.
       float fSpeed = jumpDistance / totalTime;
+
+
+      // launch the Ball with the calculated speed.
+      Vector3 v = new Vector3(0, vSpeed, fSpeed);
+      GetComponent<Rigidbody>().velocity = v;
+    }
+
+    void jumpInPlace(GameObject go)
+    {
+      // Default Y position if the Player is touching the top of a Cube.
+      float defultYPos = GetComponent<Collider>().bounds.size.y / 2 + go.gameObject.GetComponent<Collider>().bounds.size.y / 2;
+
+      // Correct any position error due to late collision detection.
+      transform.position = new Vector3(transform.position.x, defultYPos, go.gameObject.transform.position.z);
+        if (go.tag == "cube")
+        {
+          if (PlayerPrefs.GetString("dark") == "Off")
+          {
+            go.gameObject.transform.GetChild(1).gameObject.GetComponent<Renderer>().material = blackMaterial;
+            StartCoroutine(fadeCube(go));
+          }
+          else
+          {
+            go.gameObject.transform.GetChild(1).gameObject.GetComponent<Renderer>().material = whiteMaterial;
+            StartCoroutine(fadeCube(go));
+          }
+          // Show Boundary Cube.
+          go.gameObject.transform.GetChild(1).gameObject.SetActive(true);
+
+        }
+
+
+// Get the current gravity value.
+      float g = Physics.gravity.magnitude;
+
+// Calculate the total time required to jump with specific Height.
+      float totalTime = Mathf.Sqrt(jumpHeight * 7 / g);
+
+// Calculate the vertical speed required to jump with specific Height.
+      float vSpeed = totalTime * g / 2;
+// Calculate the forward speed required to jump specific Distance.
+      float fSpeed = 0;
 
 
       // launch the Ball with the calculated speed.

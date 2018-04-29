@@ -1143,8 +1143,8 @@ MonoBehaviour:
   uiController: {fileID: 1530382542}
   blackMaterial: {fileID: 2100000, guid: fdca0da1b69ece24ba2bc506085a3474, type: 2}
   whiteMaterial: {fileID: 2100000, guid: b4e9e460c7488eb48bcb32d3789480e4, type: 2}
-  fadeTimeWait: 0.09
-  fadeAmount: 50
+  fadeTimeWait: 0.05
+  fadeAmount: 10
   score: 0
   scrMultiplier: 1.5
   scoreUpdateDuration: 0.5
@@ -1301,7 +1301,7 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: a9454ca3cb49a0f41b358a74da0bc460, type: 3}
     m_FontSize: 120
     m_FontStyle: 1
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 0
     m_MaxSize: 120
     m_Alignment: 4
