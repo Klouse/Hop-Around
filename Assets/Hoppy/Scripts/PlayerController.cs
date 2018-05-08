@@ -437,7 +437,6 @@ public class PlayerController : MonoBehaviour {
         return false;
       }
     }catch {
-      Debug.Log("pickup not a power");
       return false;
     }
   }

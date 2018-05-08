@@ -1847,6 +1847,8 @@ MonoBehaviour:
   - {r: 1, g: 0.09019608, b: 0.16862746, a: 1}
   - {r: 0.09803922, g: 0.9411765, b: 0.38431373, a: 1}
   - {r: 0.050980393, g: 0.60784316, b: 1, a: 1}
+  colorMultiplier: 1
+  colorModifier: 1.1
   horizontalSpeed: 1
   slidingSpeed: 2
   margin: 0.25

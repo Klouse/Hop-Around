@@ -31,6 +31,10 @@ public class CubeController : MonoBehaviour {
 	public Color currentColor;
 	// Array of the colors for the cubes.
 	public Color[] colorsOfTheCube;
+	// color multiplier
+	public float colorMultiplier;
+	// color modifier
+	public float colorModifier;
 
 	// Speed for moving the cube horizontally.
 	public float horizontalSpeed;
@@ -181,39 +185,51 @@ public class CubeController : MonoBehaviour {
 
 	#region Spawn cubes and powers, and move them from up to down and horizontally
 
-	public void spawnCubes ()
+	// will take the number of cubes that could fit in the clamp e.g. 1-3
+	public void spawnCubes (int numCubes)
 	{
 		// Counter for Changing the color of the cubes.
 		counterForSpawnCubes++;
 
 		// Check if the Color will be Changed or not.
-		if (counterForSpawnCubes == 10)
+		// this should be increased greatly
+		if (counterForSpawnCubes > (10 * colorMultiplier))
 		{
 			changeColor();
-			counterForSpawnCubes = 0;
+			colorMultiplier = colorMultiplier * colorModifier;
 		}
 
+		// Build array of cubes to be spawned
+		GameObject[] cubesToSpawn = new GameObject[numCubes];
+		// get array of locations
+		Vector3[] cubeLocations = cubePositions(numCubes);
+
+		for (int i = 0; i < numCubes; i++)
+		{
+			// Spawn the cubes in random locations within the clamp
+			Vector3 place = cubeLocations[i];
+
+			// create a cube and place it in the pre-determined position.
+			GameObject instantiatedCube = Instantiate(cube, place, Quaternion.identity) as GameObject;
+
+			instantiatedCube.name = "Cube";
+			// Set the Default current color to the cube.
+			instantiatedCube.transform.GetChild(0).GetComponentInChildren<Renderer>().material.color = currentColor;
+
+			// Access the next element in the array.
+			instantiatedCubes[i + 1] = instantiatedCube;
+		}
+
+			/*
 		// Boolean value to check if the power is instantiated or not.
 		bool powerInstantiated = false;
 		bool itemInstantiated = false;
 
-
-		// Adjust  the position for the cubes that will be spawned.
-		// Skillz Random
-		actualZPosition = actualZPosition + lengthOfTheCubes;
-		int randomSelectionForXPosition = UnityEngine.Random.Range(0, xPositions.Length);
-		float currentXPosition = xPositions[randomSelectionForXPosition];
-		float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
-		Vector3 place = new Vector3
-			(actualXPosition,
-			// height of cubes hard coded
-				5.0f,
-				actualZPosition
-			);
-
+		// get place of cube
+		Vector3 placement = placeCube(true);
 		// Dequeue a cube from the queue to be used and set a color to the cube and put it in a certain position.
 		GameObject instantiatedCube = queueOfCubes.Dequeue();
-		instantiatedCube.transform.position = place;
+		instantiatedCube.transform.position = placement;
 		instantiatedCube.transform.GetChild(0).GetComponent<Renderer>().material.color = currentColor; // currentColor comes from changeColor()
 		instantiatedCube.SetActive(true);
 
@@ -236,6 +252,57 @@ public class CubeController : MonoBehaviour {
 		row++;
 		// Call a coroutine which is responsible for moving the cube and the power from up to down.
 		StartCoroutine(slidingDownTheCubes(instantiatedCube));
+		*/
+	}
+
+	Vector3 placeCube(bool firstCube){
+		// Adjust  the position for the cubes that will be spawned.
+		// Skillz Random
+		actualZPosition = actualZPosition + lengthOfTheCubes;
+		int randomSelectionForXPosition = UnityEngine.Random.Range(0, xPositions.Length);
+		float currentXPosition = xPositions[randomSelectionForXPosition];
+		float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
+		Vector3 place = new Vector3
+			(actualXPosition,
+			// height of cubes hard coded
+				5.0f,
+				actualZPosition
+			);
+			return place;
+	}
+
+	Vector3[] cubePositions(int numPositions)
+	{
+		// create an array of positions that will be sent to the cube spawner
+		// add a bit of randomness to this. will need to choose up to x number of locaitons available
+		Vector3[] positions = new Vector3[numPositions];
+
+		// might need to be multiplied by 2?
+		actualZPosition = actualZPosition + lengthOfTheCubes;
+
+		for (int i = 0; i < numPositions; i++)
+		{
+			// Choose a x position from the pre-determined x Positions.
+			float currentXPosition = xPositions[i];
+
+			// Add a margin to the choosen position.
+			//float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
+
+			// Ignore margin to the choosen position.
+			float actualXPosition = currentXPosition;
+
+			// intialize y value of the cube.
+			float yPosition = (((i + 1f) * numberOfInstantiatedCubes) / numberOfInstantiatedCubes);
+
+			// Determine the position of the cube from the previous calculations.
+			Vector3 place = new Vector3
+				(actualXPosition,
+					yPosition,
+					actualZPosition + lengthOfTheCubes
+				);
+			positions[i] = place;
+		}
+		return positions;
 	}
 
 	IEnumerator slidingDownTheCubes(GameObject instantiatedCube)
@@ -371,7 +438,7 @@ public class CubeController : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		// Check if this object collide with the cube.
+		// Check if this object (the wall) collides with a cube.
 		if (other.tag == "cube")
 		{
 			// Reset the position of the cube.
@@ -388,7 +455,6 @@ public class CubeController : MonoBehaviour {
 				if(child != null)
 				{
 					// put all pickup items back in the inactive list before disabling
-					Debug.Log(child.tag.Substring(child.tag.Length-7));
 					if(child.tag.Substring(child.tag.Length-7) == "_Pickup")
 						itemDeactivate(child);
 
@@ -398,9 +464,11 @@ public class CubeController : MonoBehaviour {
 
 			// Disable the cube game object.
 			other.gameObject.SetActive(false);
-			// Call "spawnCubes" function to spawn a new cube.
+			// Call "spawnCubes" function to spawn some number of new cubes.
 			if (other.gameObject.name == "Cube")
-			spawnCubes();
+			{
+				spawnCubes(1);
+			}
 		}
 	}
 
