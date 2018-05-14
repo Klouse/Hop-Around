@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.PostProcessing;
 using System;
 
 
@@ -33,6 +34,8 @@ public class GamePlayUIController : MonoBehaviour {
 	public Text[] scoreTexts;
 	// Best Score UI Texts (On Starting menu and Game Over menu).
 	public Text[] bestScoreTexts;
+	// Results screen - game over Texts
+	public Text[] gameOverTexts;
 	// Game Name UI Text
 	public Text gameNameText;
 
@@ -72,6 +75,9 @@ public class GamePlayUIController : MonoBehaviour {
 	public Button debugButton;
 	public Text sliderText;
 	public Slider slider;
+
+	// Post-process blur
+	 public PostProcessVolume postProcessVolume;
 
 
 	#endregion
@@ -155,6 +161,10 @@ public class GamePlayUIController : MonoBehaviour {
 		startMenu.SetActive (false);
 		gameMenu.SetActive (false);
 		gameOverMenu.SetActive (true);
+		DepthOfField depthOfField;
+		postProcessVolume.profile.TryGetSettings(out depthOfField);
+		if (depthOfField != null) {depthOfField.enabled.Override(true);}
+
 	}
 
 	#endregion
@@ -214,9 +224,8 @@ public class GamePlayUIController : MonoBehaviour {
 			{
 				scoreTexts[i].color = colors[1];
 				bestScoreTexts[i].color = colors[1];
+				gameOverTexts[i].color = colors[1];
 			}
-			// set gem text color -- always opposite of backgound
-			numberOfGemsText.color = colors[1];
 			// set game name text color -- always opposite of background
 			gameNameText.color = colors[1];
 			// set submit button colors
@@ -234,9 +243,8 @@ public class GamePlayUIController : MonoBehaviour {
 			{
 				scoreTexts[i].color = colors[0];
 				bestScoreTexts[i].color = colors[0];
+				gameOverTexts[i].color = colors[0];
 			}
-			// set gem text color -- always opposite of backgound
-			numberOfGemsText.color = colors[0];
 			// set game name text color -- always opposite of background
 			gameNameText.color = colors[0];
 			// set submit button colors
