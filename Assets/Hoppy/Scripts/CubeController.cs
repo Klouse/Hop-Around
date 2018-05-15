@@ -12,7 +12,6 @@ public class CubeController : MonoBehaviour {
 
 	// A reference to the game play cube.
 	public GameObject cube;
-	public CubeState cubeState;
 	// The number of the cubes that will appear on the scene.
 	public int numberOfInstantiatedCubes;
 
@@ -322,12 +321,13 @@ public class CubeController : MonoBehaviour {
 			// Check if this cube will be moved horizontally or not.
 			// Skillz Random
 			randomForMovingTheCubeInXaxis = UnityEngine.Random.Range(0, 9);
+			CubeState state = instantiatedCube.GetComponent(typeof(CubeState)) as CubeState;
 			if (randomForMovingTheCubeInXaxis >= 8 & row > 5)
 			{
-				cubeState.setMoving(true);
+				state.setMoving(true);
 				IEnumerator coroutine = moveCube(instantiatedCube, null, instantiatedCube.transform.position.x, instantiatedCube.transform.position.z);
 				StartCoroutine(coroutine);
-				cubeState.setMoveCoroutine(coroutine);
+				state.setMoveCoroutine(coroutine);
 			}
 	}
 
@@ -460,9 +460,10 @@ public class CubeController : MonoBehaviour {
 				}
 			}
 			// stop the movement coroutine if it exists
-			if(cubeState.getMoving())
+			CubeState state = other.gameObject.GetComponent(typeof(CubeState)) as CubeState;
+			if(state.getMoving())
 			{
-				IEnumerator move = cubeState.getMoveCoroutine();
+				IEnumerator move = state.getMoveCoroutine();
 				StopCoroutine(move);
 			}
 			// Skillz Random

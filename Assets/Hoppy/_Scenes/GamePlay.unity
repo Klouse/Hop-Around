@@ -1851,6 +1851,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cube: {fileID: 495741524}
+  cubeState: {fileID: 495741526}
   numberOfInstantiatedCubes: 15
   items:
   - {fileID: 1381869049522700, guid: bfe3bc43cdfd1074197deddf32b0c536, type: 2}
