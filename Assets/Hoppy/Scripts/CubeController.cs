@@ -17,8 +17,8 @@ public class CubeController : MonoBehaviour {
 
 	// Array of the cubes
 	private GameObject[] instantiatedCubes;
-	// Queue of the cubes
-	private Queue<GameObject> queueOfCubes = new Queue<GameObject>();
+	// Queue of coroutines
+	Queue<IEnumerator> movements = new Queue<IEnumerator>();
 
 	// A reference to the items game object.
 	public GameObject[] items;
@@ -31,6 +31,10 @@ public class CubeController : MonoBehaviour {
 	public Color currentColor;
 	// Array of the colors for the cubes.
 	public Color[] colorsOfTheCube;
+	// color multiplier
+	public float colorMultiplier;
+	// color modifier
+	public float colorModifier;
 
 	// Speed for moving the cube horizontally.
 	public float horizontalSpeed;
@@ -171,7 +175,6 @@ public class CubeController : MonoBehaviour {
 		for (int i = 1; i <= numberOfInstantiatedCubes; i++)
 		{
 			StartCoroutine(slidingDownTheCubes(instantiatedCubes[i]));
-
 		}
 	}
 
@@ -181,23 +184,66 @@ public class CubeController : MonoBehaviour {
 
 	#region Spawn cubes and powers, and move them from up to down and horizontally
 
-	public void spawnCubes ()
+	// will take the number of cubes that could fit in the clamp e.g. 1-3
+	public void spawnCubes (int numCubes)
 	{
 		// Counter for Changing the color of the cubes.
 		counterForSpawnCubes++;
+		row++;
 
 		// Check if the Color will be Changed or not.
-		if (counterForSpawnCubes == 10)
+		// this should be increased greatly
+		if (counterForSpawnCubes > (10 * colorMultiplier))
 		{
 			changeColor();
-			counterForSpawnCubes = 0;
+			colorMultiplier = colorMultiplier * colorModifier;
 		}
 
-		// Boolean value to check if the power is instantiated or not.
-		bool powerInstantiated = false;
-		bool itemInstantiated = false;
+		// Build array of cubes to be spawned
+		GameObject[] cubesToSpawn = new GameObject[numCubes];
+		// get array of locations
+		Vector3[] cubeLocations = cubePositions(numCubes);
 
+		for (int i = 0; i < numCubes; i++)
+		{
+			// Spawn the cubes in random locations within the clamp
+			Vector3 place = cubeLocations[i];
 
+			// create a cube and place it in the pre-determined position.
+			cubesToSpawn[i] = Instantiate(cube, place, Quaternion.identity) as GameObject;
+			if (i == 0)
+			{
+				cubesToSpawn[i].name = "newCube";
+			}else{
+				cubesToSpawn[i].name = "skipCube";
+			}
+			// Set the Default current color to the cube.
+			cubesToSpawn[i].transform.GetChild(0).GetComponentInChildren<Renderer>().material.color = currentColor;
+			cubesToSpawn[i].SetActive(true);
+
+			// Check if the power will be turned on or not.
+			// Skillz Random
+			int randomNumberToSpawnPowers = UnityEngine.Random.Range(0,100);
+			if (randomNumberToSpawnPowers <= 15)
+			{
+				GameObject item = itemPick();
+				if (item != null)
+				{
+					item.transform.position = new Vector3(cubesToSpawn[i].transform.position.x, cubesToSpawn[i].transform.position.y + 0.6f, cubesToSpawn[i].transform.position.z);
+					item.transform.parent = cubesToSpawn[i].transform;
+					item.SetActive(true);
+				}
+			}
+		}
+		// Call a coroutine which is responsible for moving the cube and the power from up to down.
+		for (int i = 0; i < cubesToSpawn.Length; i++)
+		{
+			StartCoroutine(slidingDownTheCubes(cubesToSpawn[i]));
+		}
+	}
+
+	Vector3 placeCube(bool firstCube)
+	{
 		// Adjust  the position for the cubes that will be spawned.
 		// Skillz Random
 		actualZPosition = actualZPosition + lengthOfTheCubes;
@@ -210,32 +256,42 @@ public class CubeController : MonoBehaviour {
 				5.0f,
 				actualZPosition
 			);
+			return place;
+	}
 
-		// Dequeue a cube from the queue to be used and set a color to the cube and put it in a certain position.
-		GameObject instantiatedCube = queueOfCubes.Dequeue();
-		instantiatedCube.transform.position = place;
-		instantiatedCube.transform.GetChild(0).GetComponent<Renderer>().material.color = currentColor; // currentColor comes from changeColor()
-		instantiatedCube.SetActive(true);
+	Vector3[] cubePositions(int numPositions)
+	{
+		// create an array of positions that will be sent to the cube spawner
+		// add a bit of randomness to this. will need to choose up to x number of locaitons available
+		Vector3[] positions = new Vector3[numPositions];
 
-		// Check if the power will be turned on or not.
-		// Skillz Random
-		int randomNumberToSpawnPowers = UnityEngine.Random.Range(0,100);
-		if (randomNumberToSpawnPowers <= 15)
+		// set the new z position
+		// might need to be multiplied by 2?
+		actualZPosition = actualZPosition + lengthOfTheCubes;
+		// make availablePositions list from xPosition Array
+		List<float> availablePositions = new List<float>(xPositions);
+
+		for (int i = 0; i < numPositions; i++)
 		{
-			GameObject i = itemPick();
-			if (i != null)
-			{
-				powerInstantiated = true;
-				i.transform.position = new Vector3(instantiatedCube.transform.position.x, instantiatedCube.transform.position.y + 0.6f, instantiatedCube.transform.position.z);
-				i.transform.parent = instantiatedCube.transform;
-				i.SetActive(true);
-			}
-		}
+			//Skillz random
+			// grab random X position from Positions
+			int randomSelectionForXPosition = UnityEngine.Random.Range(0, availablePositions.Count);
+			// Choose a x position from the pre-determined x Positions.
+			float currentXPosition = availablePositions[randomSelectionForXPosition];
+			// Remove the position just chosen from the availablePositions
+			availablePositions.RemoveAt(randomSelectionForXPosition);
+			// Add a margin to the choosen position.
+			float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
 
- 		// Increment row counter
-		row++;
-		// Call a coroutine which is responsible for moving the cube and the power from up to down.
-		StartCoroutine(slidingDownTheCubes(instantiatedCube));
+			// Determine the position of the cube from the previous calculations.
+			Vector3 place = new Vector3
+				(actualXPosition,
+					5.0f,
+					actualZPosition
+				);
+			positions[i] = place;
+		}
+		return positions;
 	}
 
 	IEnumerator slidingDownTheCubes(GameObject instantiatedCube)
@@ -260,17 +316,26 @@ public class CubeController : MonoBehaviour {
 				instantiatedCube.transform.position.z
 			);
 
+
+
 			// Check if this cube will be moved horizontally or not.
 			// Skillz Random
 			randomForMovingTheCubeInXaxis = UnityEngine.Random.Range(0, 9);
+			CubeState state = instantiatedCube.GetComponent(typeof(CubeState)) as CubeState;
 			if (randomForMovingTheCubeInXaxis >= 8 & row > 5)
-				StartCoroutine(moveCube(instantiatedCube, null, instantiatedCube.transform.position.x, instantiatedCube.transform.position.z));
-		//}
+			{
+				state.setMoving(true);
+				IEnumerator coroutine = moveCube(instantiatedCube, null, instantiatedCube.transform.position.x, instantiatedCube.transform.position.z);
+				StartCoroutine(coroutine);
+				state.setMoveCoroutine(coroutine);
+			}
 	}
 
 	// Coroutine which is responsible for moving the cube and the power horizontally.
 	IEnumerator moveCube(GameObject cubeWillMove, GameObject powerWillMove, float displacementInXAxis, float displacementInZAxis)
 	{
+		if (cubeWillMove != null)
+		{
 		float z = cubeWillMove.transform.position.z;
 			while (z == cubeWillMove.transform.position.z)
 			{
@@ -286,7 +351,7 @@ public class CubeController : MonoBehaviour {
 				}
 			}
 			yield break;
-		//}
+		}
 
 	}
 
@@ -371,16 +436,14 @@ public class CubeController : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		// Check if this object collide with the cube.
+		// Check if this object (the wall) collides with a cube.
 		if (other.tag == "cube")
 		{
 			// Reset the position of the cube.
 			other.gameObject.transform.position = new Vector3(0, 0, 0);
 			if (other.gameObject.name == "pCube")
 			Destroy(other.gameObject);
-			// Enqueue this cube to the cubes' queue.
-			if (other.gameObject.name == "Cube")
-			queueOfCubes.Enqueue(other.gameObject);
+
 			// Disable all of the children of the cube too.
 			for(int i=1; i<other.gameObject.transform.childCount; i++)
 			{
@@ -388,19 +451,35 @@ public class CubeController : MonoBehaviour {
 				if(child != null)
 				{
 					// put all pickup items back in the inactive list before disabling
-					Debug.Log(child.tag.Substring(child.tag.Length-7));
 					if(child.tag.Substring(child.tag.Length-7) == "_Pickup")
+					{
 						itemDeactivate(child);
-
+						child.transform.parent = null;
+					}
 					child.SetActive(false);
 				}
 			}
-
-			// Disable the cube game object.
-			other.gameObject.SetActive(false);
-			// Call "spawnCubes" function to spawn a new cube.
+			// stop the movement coroutine if it exists
+			CubeState state = other.gameObject.GetComponent(typeof(CubeState)) as CubeState;
+			if(state.getMoving())
+			{
+				IEnumerator move = state.getMoveCoroutine();
+				StopCoroutine(move);
+			}
+			// Skillz Random
+			int spawnRandomCubes = UnityEngine.Random.Range(1, 4);
+			// Call "spawnCubes" function to spawn some number of new cubes.
 			if (other.gameObject.name == "Cube")
-			spawnCubes();
+			{
+				// Disable the cube game object.
+				other.gameObject.SetActive(false);
+				spawnCubes(spawnRandomCubes);
+			}else if (other.gameObject.name == "newCube") {
+				spawnCubes(spawnRandomCubes);
+				Destroy(other.gameObject);
+			}else if(other.gameObject.name == "skipCube") {
+				Destroy(other.gameObject);
+			}
 		}
 	}
 
