@@ -2024,6 +2024,8 @@ MonoBehaviour:
   - -2.25
   - 0
   - 2.25
+  xPosSpiral: 1
+  xSpiralMult: 3
   lengthOfTheCubes: 4
   player: {fileID: 838441949}
   playerController: {fileID: 838441954}

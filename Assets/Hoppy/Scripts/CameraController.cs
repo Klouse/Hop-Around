@@ -13,6 +13,8 @@ public class CameraController : MonoBehaviour {
 	// A reference to the Player Game Object.
 	public GameObject player;
 
+	public GameObject gameUIController;
+
 	// The distance between Camera position and the Player Position.
 	private Vector3 offset;
 	// The magnitude of the limit of Camera X position.
@@ -39,9 +41,12 @@ public class CameraController : MonoBehaviour {
 
 		
 		// Make the Camera follows the Player position on X and Z Axis.
-		// And clamp the Camera's X position between - xPosLimit and xPosLimit.
-		if (player != null)
-			transform.position = new Vector3 (Mathf.Clamp(player.transform.position.x + offset.x, -xPosLimit, xPosLimit), transform.position.y, player.transform.position.z + offset.z);
+		if (player != null) {
+			// move the camera with the player and have the gameUIController follow it to keep the collider in place to de-spawn the cubes
+			transform.position = new Vector3 (player.transform.position.x + offset.x, transform.position.y, player.transform.position.z + offset.z);
+			gameUIController.transform.position = new Vector3(transform.position.x, gameUIController.transform.position.y, gameUIController.transform.position.z);
+		}
+
 		
 	}
 

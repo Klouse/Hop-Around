@@ -45,7 +45,10 @@ public class CubeController : MonoBehaviour {
 	public float margin;
 	// Array of the values to be used in the x positions.
 	public float[] xPositions;
+
 	// Displacement in z-axis between cubes.
+
+	public float xSpiralMult;
 	public int lengthOfTheCubes;
 	// Intialize the z-axis point for the first cube.
 	float actualZPosition = 0.0f;
@@ -65,6 +68,8 @@ public class CubeController : MonoBehaviour {
 	public PlayerController playerController;
 	// A float number which is used to keep the displacement between this game object and the the player constant.
 	private float offset;
+
+	private Vector3 lastRowPosition = new Vector3(1,0,0);
 
 	#endregion
 
@@ -130,6 +135,7 @@ public class CubeController : MonoBehaviour {
 
 			// Ignore margin to the choosen position.
 			float actualXPosition = currentXPosition;
+			
 
 			// intialize y value of the cube.
 			float yPosition = (((i + 1f) * numberOfInstantiatedCubes) / numberOfInstantiatedCubes);
@@ -204,10 +210,16 @@ public class CubeController : MonoBehaviour {
 		// get array of locations
 		Vector3[] cubeLocations = cubePositions(numCubes);
 
+		// calculate the next offset for the row based on the previousRowPosition multiplied by the constant (xSpiralConstant currently)
+		// this will basically shift the entire row to the left or right of the previous row
+		// need to make a split path somehow too -- this might be trickier with the amount of cubes spawning per "row" since the row itself would be split
+		float xOffset = 0.0f;
+		xOffset = xSpiralMult*(lastRowPosition.x);
+
 		for (int i = 0; i < numCubes; i++)
 		{
-			// Spawn the cubes in random locations within the clamp
-			Vector3 place = cubeLocations[i];
+			// Spawn the cubes in random locations with an offset based on the previous row
+			Vector3 place = cubeLocations[i] - new Vector3(xOffset, 0, 0);
 
 			// create a cube and place it in the pre-determined position.
 			cubesToSpawn[i] = Instantiate(cube, place, Quaternion.identity) as GameObject;
@@ -234,6 +246,17 @@ public class CubeController : MonoBehaviour {
 					item.SetActive(true);
 				}
 			}
+		}
+
+		// Skillz Random
+		// This is what decides whether or not the row will start to move to the left or right
+		int randomDirection = UnityEngine.Random.Range(0,3);
+		if (randomDirection <= 1) {
+			// move the row left
+			lastRowPosition.x += -1;
+		} else {
+			// move the row right
+			lastRowPosition.x += 1;
 		}
 		// Call a coroutine which is responsible for moving the cube and the power from up to down.
 		for (int i = 0; i < cubesToSpawn.Length; i++)

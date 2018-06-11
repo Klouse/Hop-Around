@@ -52,6 +52,8 @@ public class PlayerController : MonoBehaviour {
 	// A reference to the GamePlay UI Controller script.
 	public GamePlayUIController uiController;
 
+  public Camera mainCamera;
+
   // Store our current scene
   public Scene currentScene;
 
@@ -196,10 +198,9 @@ public class PlayerController : MonoBehaviour {
 				// Control Sliding using Keyboard right and left arrow buttons.
 				float moveHorizontal = Input.GetAxis ("Horizontal");
 				transform.Translate(moveHorizontal * slidingSpeed * 0.3f, 0, 0);
+        // this is some rotation code -- needs touching up to clamp itself, might not actually be used
+        //mainCamera.transform.eulerAngles = mainCamera.transform.eulerAngles + new Vector3(0,moveHorizontal * slidingSpeed * 0.3f,0);
 			}
-
-			// Clamp the Player's X position between - xPosLimit and xPosLimit.
-			transform.position = new Vector3 (Mathf.Clamp(transform.position.x, - xPosLimit, xPosLimit), transform.position.y, transform.position.z);
 		}
 	}
 
