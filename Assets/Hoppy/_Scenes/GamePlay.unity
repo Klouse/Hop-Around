@@ -1159,6 +1159,7 @@ MonoBehaviour:
   powerUps:
   - Shield
   uiController: {fileID: 1530382542}
+  mainCamera: {fileID: 1852753897}
   blackMaterial: {fileID: 2100000, guid: fdca0da1b69ece24ba2bc506085a3474, type: 2}
   whiteMaterial: {fileID: 2100000, guid: b4e9e460c7488eb48bcb32d3789480e4, type: 2}
   fadeTimeWait: 0.05
@@ -2024,7 +2025,6 @@ MonoBehaviour:
   - -2.25
   - 0
   - 2.25
-  xPosSpiral: 1
   xSpiralMult: 3
   lengthOfTheCubes: 4
   player: {fileID: 838441949}
@@ -2823,6 +2823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 838441949}
+  gameUIController: {fileID: 1410692902}
 --- !u!114 &1852753900
 MonoBehaviour:
   m_ObjectHideFlags: 0

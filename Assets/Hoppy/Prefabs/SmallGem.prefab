@@ -56,6 +56,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 275e2cc416670ca4a8f87c11344d3b2f, type: 2}
   m_StaticBatchInfo:
@@ -83,7 +84,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1469986762214300}
-  m_Mesh: {fileID: 4300000, guid: 42ce0862bb418db44921a260d5de1289, type: 3}
+  m_Mesh: {fileID: 4300000, guid: ee4df63d1e00320469c8032319ff4418, type: 3}
 --- !u!64 &64408864735661204
 MeshCollider:
   m_ObjectHideFlags: 1
@@ -115,3 +116,4 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
