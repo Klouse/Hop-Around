@@ -20,9 +20,6 @@ public class GamePlayUIController : MonoBehaviour {
 	[HideInInspector]
 	public int score;
 
-	// A reference to Number of Gems UI Text.
-	public Text numberOfGemsText;
-
 	// Starting Menu - Shown before the game is started.
 	public GameObject startMenu;
 	// Game Menu - Shown during the game is played.
@@ -38,18 +35,11 @@ public class GamePlayUIController : MonoBehaviour {
 	public Text[] gameOverTexts;
 	// Game Name UI Text
 	public Text gameNameText;
+	// Pop Up Text
+	public Text floatingText;
 
 	// A reference to the Player script.
 	public PlayerController playerScript;
-
-	// A reference to all game over panels (Rewarded Video, Free Gifts, New Model, Rate Us and Promotion).
-	public RectTransform[] gameOverPanels;
-	// A reference to the No Enough Gems Group of Elemnts (On New Model Panel).
-	public GameObject noEnoughGems;
-	// A reference to the Enough Gems Group of Elemnts (On New Model Panel).
-	public GameObject EnoughGems;
-	// A reference to Number of Remaining Gems UI Text.
-	public Text numberOfRemainingGemsText;
 
 	public Button settingsButton;
 	public Sprite settingsUnPressed;
@@ -101,9 +91,6 @@ public class GamePlayUIController : MonoBehaviour {
 		// Update debug slider speed
 		float sliderSave = PlayerPrefs.GetFloat("Slider Speed");
 		updateSliderUITexts (sliderSave);
-
-		// Update Number of Gems displayed.
-		updateNumberOfGemsUITexts ();
 
 		// Update colors for dark Model
 		updateDarkMode();
@@ -191,13 +178,6 @@ public class GamePlayUIController : MonoBehaviour {
 		}
 	}
 
-	public void updateNumberOfGemsUITexts ()
-	{
-		// Update Number of Gems displayed.
-		int numberOfGems = PlayerPrefs.GetInt ("NumberOfPickUps");
-		numberOfGemsText.text = "" + numberOfGems;
-	}
-
 	public void updateSliderUITexts (float speed)
 	{
 		// Update the debug slider Speed text
@@ -207,6 +187,10 @@ public class GamePlayUIController : MonoBehaviour {
 	{
 		// Update the slider value
 		slider.value = value;
+	}
+	public void ShowFloatingText()
+	{
+		Instantiate(floatingText, transform.position, Quaternion.identity);
 	}
 
 	void updateDarkMode()

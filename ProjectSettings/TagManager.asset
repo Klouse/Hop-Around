@@ -9,9 +9,10 @@ TagManager:
   - GamePlayCanvas
   - Shield
   - Gem
-  - Shield_Pickup
   - cubeModel
-  - Gem_Pickup
+  - Shield_Item
+  - Gem_Item
+  - Crate_Item
   layers:
   - Default
   - TransparentFX

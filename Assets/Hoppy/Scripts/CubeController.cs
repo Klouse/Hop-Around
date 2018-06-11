@@ -451,7 +451,7 @@ public class CubeController : MonoBehaviour {
 				if(child != null)
 				{
 					// put all pickup items back in the inactive list before disabling
-					if(child.tag.Substring(child.tag.Length-7) == "_Pickup")
+					if(child.tag.Substring(child.tag.Length-5) == "_Item")
 					{
 						itemDeactivate(child);
 						child.transform.parent = null;

@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour {
         {
           jumpInPlace(col.gameObject);
         }
-        if (col.tag == "Gem_Pickup")
+        else if (col.tag == "Gem_Item")
         {
             // Collision detected with a pick up (Gem) Object.
 
@@ -236,22 +236,27 @@ public class PlayerController : MonoBehaviour {
             numberOfPickUps++;
             PlayerPrefs.SetInt("NumberOfPickUps", numberOfPickUps);
 
-            // Update Number of Gems displayed.
-            uiController.updateNumberOfGemsUITexts();
-
             // Instantiate Gem Explosion in the same position of the picked Gem.
             GameObject gemExplosionObject = Instantiate(gemsExplosion, new Vector3(transform.position.x, gemsExplosion.transform.position.y, transform.position.z), gemsExplosion.transform.rotation) as GameObject;
 
             // Destroy Gem Explosion Object.
             Destroy(gemExplosionObject, 1f);
         }
-        if (col.tag == "Shield_Pickup")
+        else if (col.tag == "Shield_Item")
         {
             // Collision detected with a Shield Object.
             // Deactivate The Shield Object.
             col.gameObject.SetActive(false);
             // Call powerup handler
             enableShield();
+        }
+        else if(col.tag == "Crate_Item")
+        {
+            // Collision detected with an obstacle. (Crate)
+            // Hitting the wall or obstacle will slow the player back to the starting speed.
+            // Deactivate The Crate Object.
+            col.gameObject.SetActive(false);
+            resetSteps();
         }
     }
 
@@ -346,6 +351,15 @@ public class PlayerController : MonoBehaviour {
       controlGravity();                   // Calculate the new gravity according to the new score.
     }
 
+    // Reset Steps will kill the speed of the player and reset it back to starting speed
+    // This is used by the crate item that "slows" the player
+    void resetSteps()
+    {
+      steps = -1; // reset the steps taken
+      // Reset Gravity
+      Physics.gravity = new Vector3(0, minGravity, 0);
+    }
+
     // Update score with provided value
     void updateScore(int scoreAddition)
     {
@@ -354,12 +368,14 @@ public class PlayerController : MonoBehaviour {
       UICountTo(score);
     }
 
+    // UI Count to will animate the increment of score on screen up to the current real score
     void UICountTo(int target)
     {
       StopCoroutine ("CountTo");
       StartCoroutine ("CountTo", target);
     }
 
+    // Counts up to the target int and updates the on screen UI accordingly
     IEnumerator CountTo (int target)
     {
          int start = uiController.score;
@@ -441,6 +457,8 @@ public class PlayerController : MonoBehaviour {
   }
 
   #region powerUps
+  // Build the list of power ups and set them to false
+  // This helps control if a certain item will spawn or not (In cube controller)
   void buildPowerUpList(string[] ps)
   {
     foreach (string s in ps)
@@ -473,10 +491,12 @@ public class PlayerController : MonoBehaviour {
     // Turn off shield effect on player (blue glow)
     transform.GetChild(0).gameObject.SetActive(false);
   }
+
+  // Returns true or false on whether a power effect is currently applied to the player
   public bool isPowerActive(string power)
   {
     try{
-      string p = power.Remove(power.Length - 7);
+      string p = power.Remove(power.Length - 5);
       if (curPowers[p] == true)
       {
         return true;
