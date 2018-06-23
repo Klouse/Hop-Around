@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour {
   // A reference to the list of power ups available
   public Dictionary<string, bool> curPowers = new Dictionary<string, bool>();
   public string[] powerUps;
+  // Color per powerup
+  public Color[] itemColors;
 
 	// Ball sliding speed in X Axis.
   private float slidingSpeed;
@@ -216,6 +218,9 @@ public class PlayerController : MonoBehaviour {
           playSound();
           // Make the player jump
           jump(col.gameObject);
+            
+          // Show floating text
+          uiController.ShowFloatingText(col.gameObject, platformScore.ToString(), itemColors[3]);
         }
         else if (currentScene.name == "Start Screen" && col.gameObject.tag == "cube")
         {
@@ -226,7 +231,11 @@ public class PlayerController : MonoBehaviour {
             // Collision detected with a pick up (Gem) Object.
 
             // update current score with gem value
-            updateScore(powerUpScore + 50);
+            var s = powerUpScore + 50;
+            updateScore(s);
+            
+            // Show floating text
+            uiController.ShowFloatingText(col.gameObject, s.ToString(), itemColors[1]);
 
             // Deactivate The Gem Object.
             col.gameObject.SetActive(false);
@@ -244,9 +253,13 @@ public class PlayerController : MonoBehaviour {
         }
         else if (col.tag == "Shield_Item")
         {
+            // Show floating text
+            uiController.ShowFloatingText(col.gameObject,"Shield", itemColors[0]);
+
             // Collision detected with a Shield Object.
             // Deactivate The Shield Object.
             col.gameObject.SetActive(false);
+            
             // Call powerup handler
             enableShield();
         }
@@ -254,6 +267,10 @@ public class PlayerController : MonoBehaviour {
         {
             // Collision detected with an obstacle. (Crate)
             // Hitting the wall or obstacle will slow the player back to the starting speed.
+
+            // Show floating text
+            uiController.ShowFloatingText(col.gameObject, "Slow", itemColors[2]);
+            
             // Deactivate The Crate Object.
             col.gameObject.SetActive(false);
             resetSteps();

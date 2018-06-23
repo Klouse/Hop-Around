@@ -36,7 +36,7 @@ public class GamePlayUIController : MonoBehaviour {
 	// Game Name UI Text
 	public Text gameNameText;
 	// Pop Up Text
-	public Text floatingText;
+	public GameObject floatingTextPrefab;
 
 	// A reference to the Player script.
 	public PlayerController playerScript;
@@ -188,9 +188,11 @@ public class GamePlayUIController : MonoBehaviour {
 		// Update the slider value
 		slider.value = value;
 	}
-	public void ShowFloatingText()
+	public void ShowFloatingText(GameObject g, String copy, Color color)
 	{
-		Instantiate(floatingText, transform.position, Quaternion.identity);
+		var go = Instantiate(floatingTextPrefab, g.transform.position, Quaternion.identity);
+		go.GetComponent<TextMesh>().color = color;
+		go.GetComponent<TextMesh>().text = copy;
 	}
 
 	void updateDarkMode()
