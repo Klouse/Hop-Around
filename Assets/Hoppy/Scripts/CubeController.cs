@@ -467,7 +467,7 @@ public class CubeController : MonoBehaviour {
 				StopCoroutine(move);
 			}
 			// Skillz Random
-			int spawnRandomCubes = UnityEngine.Random.Range(1, 4);
+			int spawnRandomCubes = UnityEngine.Random.Range(3, 3);
 			// Call "spawnCubes" function to spawn some number of new cubes.
 			if (other.gameObject.name == "Cube")
 			{

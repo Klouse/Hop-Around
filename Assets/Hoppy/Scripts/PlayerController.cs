@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour {
   // Score multiplier
   public float scrMultiplier = 1;
   // Score per platform
-  private int platformScore = 100;
+  private int platformScore = 10;
   // Score per powerup
   private int powerUpScore = 150;
 
@@ -274,6 +274,26 @@ public class PlayerController : MonoBehaviour {
             // Deactivate The Crate Object.
             col.gameObject.SetActive(false);
             resetSteps();
+        }
+        else if (col.tag == "Ring_Item")
+        {
+            // Collision detected with a pick up (Gem) Object.
+
+            // update current score with gem value
+            var s = powerUpScore + 20;
+            updateScore(s);
+            
+            // Show floating text
+            uiController.ShowFloatingText(col.gameObject, s.ToString(), itemColors[1]);
+
+            // Deactivate The Gem Object.
+            col.gameObject.SetActive(false);
+
+            // Instantiate Gem Explosion in the same position of the picked Gem.
+            GameObject gemExplosionObject = Instantiate(gemsExplosion, new Vector3(transform.position.x, gemsExplosion.transform.position.y, transform.position.z), gemsExplosion.transform.rotation) as GameObject;
+
+            // Destroy Gem Explosion Object.
+            Destroy(gemExplosionObject, 1f);
         }
     }
 

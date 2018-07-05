@@ -190,7 +190,7 @@ public class GamePlayUIController : MonoBehaviour {
 	}
 	public void ShowFloatingText(GameObject g, String copy, Color color)
 	{
-		var go = Instantiate(floatingTextPrefab, g.transform.position, Quaternion.identity);
+		var go = Instantiate(floatingTextPrefab, g.transform.position, camera.gameObject.transform.rotation);
 		go.GetComponent<TextMesh>().color = color;
 		go.GetComponent<TextMesh>().text = copy;
 	}

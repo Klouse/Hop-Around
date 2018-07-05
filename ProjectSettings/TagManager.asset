@@ -13,6 +13,7 @@ TagManager:
   - Shield_Item
   - Gem_Item
   - Crate_Item
+  - Ring_Item
   layers:
   - Default
   - TransparentFX
