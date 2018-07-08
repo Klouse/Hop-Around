@@ -284,10 +284,7 @@ public class PlayerController : MonoBehaviour {
             updateScore(s);
             
             // Show floating text
-            uiController.ShowFloatingText(col.gameObject, s.ToString(), itemColors[1]);
-
-            // Deactivate The Gem Object.
-            col.gameObject.SetActive(false);
+            uiController.ShowFloatingText(col.gameObject, s.ToString(), itemColors[4]);
 
             // Instantiate Gem Explosion in the same position of the picked Gem.
             GameObject gemExplosionObject = Instantiate(gemsExplosion, new Vector3(transform.position.x, gemsExplosion.transform.position.y, transform.position.z), gemsExplosion.transform.rotation) as GameObject;
