@@ -25,7 +25,7 @@ public class CubeController : MonoBehaviour {
 	// List of items
 	private List<GameObject> listOfItems = new List<GameObject>();
 	// Dictionary of all obtainable items and if they are active
-  private Dictionary<string, bool> itemState = new Dictionary<string, bool>();
+	private Dictionary<string, bool> itemState = new Dictionary<string, bool>();
 
 	// Color of the cubes.
 	public Color currentColor;
@@ -49,6 +49,8 @@ public class CubeController : MonoBehaviour {
 	public int lengthOfTheCubes;
 	// Intialize the z-axis point for the first cube.
 	float actualZPosition = 0.0f;
+	// Initialize the z-axis point for items
+	float itemZPosition;
 	// Initialize the row counter
 	int row = 0;
 	// List of the colors.
@@ -229,7 +231,18 @@ public class CubeController : MonoBehaviour {
 				GameObject item = itemPick();
 				if (item != null)
 				{
-					item.transform.position = new Vector3(cubesToSpawn[i].transform.position.x, cubesToSpawn[i].transform.position.y + 0.6f, cubesToSpawn[i].transform.position.z);
+					string t = item.tag.Remove(item.tag.Length - 5);
+					// A new positon to set to the item
+					Vector3 pos;
+					// If the item is a ring, put it in the air with placeFloatingItem()
+					if(t == "Ring")
+					{
+						Vector3 p = placeFloatingItem();
+						pos = new Vector3(cubesToSpawn[i].transform.position.x, p.y, p.z);
+					}else{
+						pos = new Vector3(cubesToSpawn[i].transform.position.x, cubesToSpawn[i].transform.position.y + 0.6f, cubesToSpawn[i].transform.position.z);
+					}
+					item.transform.position = pos;
 					item.transform.parent = cubesToSpawn[i].transform;
 					item.SetActive(true);
 				}
@@ -316,6 +329,20 @@ public class CubeController : MonoBehaviour {
 				instantiatedCube.transform.position.z
 			);
 
+			// Unparent Ring if there is one
+			// This will prevent the ring from moving back and forth with the platform
+			for(int i=1; i<instantiatedCube.gameObject.transform.childCount; i++)
+			{
+				var child = instantiatedCube.gameObject.transform.GetChild(i).gameObject;
+				if(child != null)
+				{
+					if(child.tag.Remove(child.tag.Length - 5) == "Ring")
+					{
+						child.transform.parent = null;
+					}
+				}
+			}
+
 
 
 			// Check if this cube will be moved horizontally or not.
@@ -325,14 +352,14 @@ public class CubeController : MonoBehaviour {
 			if (randomForMovingTheCubeInXaxis >= 8 & row > 5)
 			{
 				state.setMoving(true);
-				IEnumerator coroutine = moveCube(instantiatedCube, null, instantiatedCube.transform.position.x, instantiatedCube.transform.position.z);
+				IEnumerator coroutine = moveCube(instantiatedCube, instantiatedCube.transform.position.x, instantiatedCube.transform.position.z);
 				StartCoroutine(coroutine);
 				state.setMoveCoroutine(coroutine);
 			}
 	}
 
 	// Coroutine which is responsible for moving the cube and the power horizontally.
-	IEnumerator moveCube(GameObject cubeWillMove, GameObject powerWillMove, float displacementInXAxis, float displacementInZAxis)
+	IEnumerator moveCube(GameObject cubeWillMove, float displacementInXAxis, float displacementInZAxis)
 	{
 		if (cubeWillMove != null)
 		{
@@ -380,12 +407,32 @@ public class CubeController : MonoBehaviour {
 	{
 		// Item is active on a cube on screen
 		itemState[g.tag] = true;
+		//Debug.Log("Setting " + g.tag + " active");
 	}
 
 	void itemDeactivate(GameObject g)
 	{
 		// Item is no longer on screen
  		itemState[g.tag] = false;
+		//Debug.Log("Setting " + g.tag + " inactive");
+	}
+
+	Vector3 placeFloatingItem()
+	{
+		// Adjust  the position for a floating item that will be spawned.
+		// Currently just used for the floating ring
+		// Skillz Random
+		itemZPosition = actualZPosition - lengthOfTheCubes/2;
+		int randomSelectionForXPosition = UnityEngine.Random.Range(0, xPositions.Length);
+		float currentXPosition = xPositions[randomSelectionForXPosition];
+		float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
+		float actualYPosition = 7.0f;
+		Vector3 place = new Vector3
+			(actualXPosition,
+				actualYPosition,
+				itemZPosition
+			);
+		return place;
 	}
 	#endregion
 
@@ -436,6 +483,7 @@ public class CubeController : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
+		//Debug.Log (other.tag);
 		// Check if this object (the wall) collides with a cube.
 		if (other.tag == "cube")
 		{
@@ -451,7 +499,7 @@ public class CubeController : MonoBehaviour {
 				if(child != null)
 				{
 					// put all pickup items back in the inactive list before disabling
-					if(child.tag.Substring(child.tag.Length-7) == "_Pickup")
+					if(child.tag.Substring(child.tag.Length-5) == "_Item")
 					{
 						itemDeactivate(child);
 						child.transform.parent = null;
@@ -467,7 +515,7 @@ public class CubeController : MonoBehaviour {
 				StopCoroutine(move);
 			}
 			// Skillz Random
-			int spawnRandomCubes = UnityEngine.Random.Range(1, 4);
+			int spawnRandomCubes = UnityEngine.Random.Range(1, 3);
 			// Call "spawnCubes" function to spawn some number of new cubes.
 			if (other.gameObject.name == "Cube")
 			{
@@ -480,6 +528,10 @@ public class CubeController : MonoBehaviour {
 			}else if(other.gameObject.name == "skipCube") {
 				Destroy(other.gameObject);
 			}
+		}else if(other.tag.Substring(other.tag.Length-5) == "_Item"){
+			// If an item it not parented to a cube, still deactivate it
+			itemDeactivate(other.gameObject);
+			other.gameObject.SetActive(false);
 		}
 	}
 

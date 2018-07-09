@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 64779870204681232}
   m_Layer: 0
   m_Name: ShieldPickup
-  m_TagString: Shield_Pickup
+  m_TagString: Shield_Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -115,6 +115,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 72e0fca1a0d76274dbb4653959be1529, type: 2}
   m_StaticBatchInfo:
@@ -149,6 +150,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: b8e69aede1ceeeb4ea2fc0d93f109a27, type: 2}
   m_StaticBatchInfo:
