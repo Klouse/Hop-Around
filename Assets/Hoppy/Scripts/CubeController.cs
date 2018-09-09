@@ -68,6 +68,10 @@ public class CubeController : MonoBehaviour {
 	// A float number which is used to keep the displacement between this game object and the the player constant.
 	private float offset;
 
+
+	// Section for Environment
+	public GameObject environment;
+
 	#endregion
 
 
@@ -107,9 +111,10 @@ public class CubeController : MonoBehaviour {
 	void LateUpdate()
 	{
 		// To keep the displacement in z-axis between this object and the player game object constant.
-		if (player != null)
+		if (player != null){
 			transform.position = new Vector3(transform.position.x, transform.position.y, player.transform.position.z + offset);
-
+			environment.transform.position = new Vector3(environment.transform.position.x, environment.transform.position.y, player.transform.position.z + 2.42f);
+		}
 	}
 
 	#endregion
@@ -515,6 +520,7 @@ public class CubeController : MonoBehaviour {
 				StopCoroutine(move);
 			}
 			// Skillz Random
+			// DEBUG // Jake -- switch back to 1, 3
 			int spawnRandomCubes = UnityEngine.Random.Range(1, 3);
 			// Call "spawnCubes" function to spawn some number of new cubes.
 			if (other.gameObject.name == "Cube")

@@ -14,6 +14,8 @@ TagManager:
   - Gem_Item
   - Crate_Item
   - Ring_Item
+  - Environment
+  - MovingEnvironment
   layers:
   - Default
   - TransparentFX
