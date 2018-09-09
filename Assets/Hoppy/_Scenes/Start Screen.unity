@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 8
+  serializedVersion: 9
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -39,6 +39,7 @@ RenderSettings:
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
   m_IndirectSpecularColor: {r: 0.37356424, g: 0.3811201, b: 0.35887662, a: 1}
+  m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -54,11 +55,10 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 9
+    serializedVersion: 10
     m_Resolution: 2
     m_BakeResolution: 40
-    m_TextureWidth: 1024
-    m_TextureHeight: 1024
+    m_AtlasSize: 1024
     m_AO: 0
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
@@ -430,6 +430,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 3809e91dbac4fcc40951676f0848ec73, type: 2}
   m_StaticBatchInfo:
@@ -497,9 +498,10 @@ MonoBehaviour:
   gemsExplosion: {fileID: 1000012160138410, guid: 98576b417133d418bb0e29ac07791c03,
     type: 2}
   shieldExplosion: {fileID: 0}
-  shield: {fileID: 0}
+  shield: {fileID: 100000, guid: 0c8de28746078d647932c1e3988d8cdf, type: 3}
   powerUps:
   - Shield
+  itemColors: []
   uiController: {fileID: 0}
   blackMaterial: {fileID: 2100000, guid: fdca0da1b69ece24ba2bc506085a3474, type: 2}
   whiteMaterial: {fileID: 2100000, guid: b4e9e460c7488eb48bcb32d3789480e4, type: 2}
@@ -641,6 +643,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 012c11d1d31704c51829f86f71735c11, type: 2}
   m_StaticBatchInfo:
@@ -967,6 +970,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: b4e9e460c7488eb48bcb32d3789480e4, type: 2}
   m_StaticBatchInfo:
@@ -1107,12 +1111,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cube: {fileID: 1285949401}
   numberOfInstantiatedCubes: 15
-  items: []
+  items:
+  - {fileID: 100000, guid: 0c8de28746078d647932c1e3988d8cdf, type: 3}
   currentColor: {r: 0.098039225, g: 0.94117653, b: 0.38431376, a: 1}
   colorsOfTheCube:
   - {r: 1, g: 0.09019608, b: 0.16862746, a: 1}
   - {r: 0.09803922, g: 0.9411765, b: 0.38431373, a: 1}
   - {r: 0.050980393, g: 0.60784316, b: 1, a: 1}
+  colorMultiplier: 0
+  colorModifier: 0
+  currentShape: {fileID: 1285949401}
+  shapesOfPlatforms:
+  - {fileID: 1493495042169444, guid: b96f8abf5b3b23540bce74bdb56265a9, type: 2}
+  - {fileID: 0}
+  shapeMultiplier: 0
+  shapeModifier: 0
   horizontalSpeed: 1
   slidingSpeed: 2
   margin: 0.25
@@ -1122,7 +1135,7 @@ MonoBehaviour:
   - 2.25
   lengthOfTheCubes: 4
   player: {fileID: 838441949}
-  playerController: {fileID: 0}
+  playerController: {fileID: 838441954}
 --- !u!65 &1410692904
 BoxCollider:
   m_ObjectHideFlags: 0

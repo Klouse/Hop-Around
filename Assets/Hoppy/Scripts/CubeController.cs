@@ -35,6 +35,14 @@ public class CubeController : MonoBehaviour {
 	public float colorMultiplier;
 	// color modifier
 	public float colorModifier;
+	// Current shape of platforms
+	public GameObject currentShape;
+	// Array of the shapes for the platforms
+	public GameObject[] shapesOfPlatforms;
+	// shape multiplier
+	public float shapeMultiplier;
+	// color modifier
+	public float shapeModifier;
 
 	// Speed for moving the cube horizontally.
 	public float horizontalSpeed;
@@ -55,6 +63,8 @@ public class CubeController : MonoBehaviour {
 	int row = 0;
 	// List of the colors.
 	private List<Color> colorsList;
+	// List of platform shapes
+	private List<GameObject> shapeList;
 	// Intialize the counter that is used to change the color of the cubes.
 	private int counterForSpawnCubes = 1;
 
@@ -84,6 +94,8 @@ public class CubeController : MonoBehaviour {
 		offset = transform.position.z - player.transform.position.z;
 		// Intialize the color list.
 		colorsList = new List<Color>(colorsOfTheCube.Length);
+		// Initialize the shape list
+		shapeList = new List<GameObject>(shapesOfPlatforms.Length);
 
 		// Create an array of cubes and assign the first cube in the array.
 		instantiatedCubes = new GameObject[numberOfInstantiatedCubes+1];
@@ -91,6 +103,8 @@ public class CubeController : MonoBehaviour {
 
 		// Fill the list of the colors from a color array.
 		FillColors();
+		// Fill the list of shapes from a shape array
+		FillShapes();
 		// Intialize and create cubes.
 		StartCoroutine(OnStart());
 
@@ -192,7 +206,7 @@ public class CubeController : MonoBehaviour {
 	#region Spawn cubes and powers, and move them from up to down and horizontally
 
 	// will take the number of cubes that could fit in the clamp e.g. 1-3
-	public void spawnCubes (int numCubes)
+	public void spawnPlatforms (int numCubes)
 	{
 		// Counter for Changing the color of the cubes.
 		counterForSpawnCubes++;
@@ -205,7 +219,12 @@ public class CubeController : MonoBehaviour {
 			changeColor();
 			colorMultiplier = colorMultiplier * colorModifier;
 		}
-
+		// Check if the shape will be changed or not.
+		if (counterForSpawnCubes > (10 * shapeMultiplier))
+		{
+			changePlatformShape();
+			shapeMultiplier = shapeMultiplier * shapeModifier;
+		}
 		// Build array of cubes to be spawned
 		GameObject[] cubesToSpawn = new GameObject[numCubes];
 		// get array of locations
@@ -217,7 +236,7 @@ public class CubeController : MonoBehaviour {
 			Vector3 place = cubeLocations[i];
 
 			// create a cube and place it in the pre-determined position.
-			cubesToSpawn[i] = Instantiate(cube, place, Quaternion.identity) as GameObject;
+			cubesToSpawn[i] = Instantiate(currentShape, place, Quaternion.identity) as GameObject;
 			if (i == 0)
 			{
 				cubesToSpawn[i].name = "newCube";
@@ -339,7 +358,7 @@ public class CubeController : MonoBehaviour {
 			for(int i=1; i<instantiatedCube.gameObject.transform.childCount; i++)
 			{
 				var child = instantiatedCube.gameObject.transform.GetChild(i).gameObject;
-				if(child != null)
+				if(child != null && child.tag != "cube")
 				{
 					if(child.tag.Remove(child.tag.Length - 5) == "Ring")
 					{
@@ -353,7 +372,7 @@ public class CubeController : MonoBehaviour {
 			// Check if this cube will be moved horizontally or not.
 			// Skillz Random
 			randomForMovingTheCubeInXaxis = UnityEngine.Random.Range(0, 9);
-			CubeState state = instantiatedCube.GetComponent(typeof(CubeState)) as CubeState;
+			CubeState state = instantiatedCube.GetComponentInChildren(typeof(CubeState)) as CubeState;
 			if (randomForMovingTheCubeInXaxis >= 8 & row > 5)
 			{
 				state.setMoving(true);
@@ -385,6 +404,24 @@ public class CubeController : MonoBehaviour {
 			yield break;
 		}
 
+	}
+
+	void changePlatformShape()
+	{
+		GameObject randomShape;
+		// Remove the current shape from the list to choose another random shape.
+		shapeList.Remove(currentShape);
+		// Fill the list if the list is empty
+		if (shapeList.Count <= 0) FillShapes();
+		// choosing the new color
+		do
+		{
+			// Skillz Random
+			int selectRandomShape = UnityEngine.Random.Range(0, 1);
+			randomShape = shapeList[selectRandomShape];
+		} while (randomShape == currentShape);
+		// currentShape will be used to instantiate new prefabs
+		currentShape = randomShape;
 	}
 
 	#endregion
@@ -456,7 +493,7 @@ public class CubeController : MonoBehaviour {
 		do
 		{
 			// Skillz Random
-			int selectRandomColor = UnityEngine.Random.Range(0, colorsList.Count);
+			int selectRandomColor = UnityEngine.Random.Range(0, 3);
 			randomColor = colorsList[selectRandomColor];
 		} while (randomColor == currentColor);
 		currentColor = randomColor;
@@ -477,6 +514,17 @@ public class CubeController : MonoBehaviour {
 		for (int i = 0; i <= 2; i++)
 		{
 			colorsList.Add(colorsOfTheCube[i]);
+		}
+	}
+
+	// Fill the list from the array.
+	void FillShapes()
+	{
+		if (shapeList.Count > 0)
+			shapeList.Clear();
+		for (int i = 0; i <= 1; i++)
+		{
+			shapeList.Add(shapesOfPlatforms[i]);
 		}
 	}
 
@@ -513,7 +561,7 @@ public class CubeController : MonoBehaviour {
 				}
 			}
 			// stop the movement coroutine if it exists
-			CubeState state = other.gameObject.GetComponent(typeof(CubeState)) as CubeState;
+			CubeState state = other.gameObject.GetComponentInChildren(typeof(CubeState)) as CubeState;
 			if(state.getMoving())
 			{
 				IEnumerator move = state.getMoveCoroutine();
@@ -527,9 +575,9 @@ public class CubeController : MonoBehaviour {
 			{
 				// Disable the cube game object.
 				other.gameObject.SetActive(false);
-				spawnCubes(spawnRandomCubes);
+				spawnPlatforms(spawnRandomCubes);
 			}else if (other.gameObject.name == "newCube") {
-				spawnCubes(spawnRandomCubes);
+				spawnPlatforms(spawnRandomCubes);
 				Destroy(other.gameObject);
 			}else if(other.gameObject.name == "skipCube") {
 				Destroy(other.gameObject);
