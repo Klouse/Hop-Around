@@ -372,7 +372,7 @@ public class CubeController : MonoBehaviour {
 			// Check if this cube will be moved horizontally or not.
 			// Skillz Random
 			randomForMovingTheCubeInXaxis = UnityEngine.Random.Range(0, 9);
-			CubeState state = instantiatedCube.GetComponentInChildren(typeof(CubeState)) as CubeState;
+			CubeState state = instantiatedCube.GetComponent(typeof(CubeState)) as CubeState;
 			if (randomForMovingTheCubeInXaxis >= 8 & row > 5)
 			{
 				state.setMoving(true);
@@ -561,7 +561,7 @@ public class CubeController : MonoBehaviour {
 				}
 			}
 			// stop the movement coroutine if it exists
-			CubeState state = other.gameObject.GetComponentInChildren(typeof(CubeState)) as CubeState;
+			CubeState state = other.gameObject.GetComponent(typeof(CubeState)) as CubeState;
 			if(state.getMoving())
 			{
 				IEnumerator move = state.getMoveCoroutine();

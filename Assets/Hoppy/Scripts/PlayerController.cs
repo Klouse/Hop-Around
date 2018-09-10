@@ -297,7 +297,7 @@ public class PlayerController : MonoBehaviour {
     void jump(GameObject go)
     {
       // Default Y position if the Player is touching the top of a Cube.
-      float defultYPos = GetComponentInChildren<Collider>().bounds.size.y / 2 + go.gameObject.GetComponent<Collider>().bounds.size.y / 2;
+      float defultYPos = GetComponent<Collider>().bounds.size.y / 2 + go.gameObject.GetComponent<Collider>().bounds.size.y / 2;
 
       // Correct any position error due to late collision detection.
       transform.position = new Vector3(transform.position.x, defultYPos, go.gameObject.transform.position.z);

@@ -16,6 +16,7 @@ TagManager:
   - Ring_Item
   - Environment
   - MovingEnvironment
+  - cylinder_collider
   layers:
   - Default
   - TransparentFX
