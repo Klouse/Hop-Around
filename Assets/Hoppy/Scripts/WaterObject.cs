@@ -23,7 +23,7 @@ public class WaterObject : MonoBehaviour {
 	// Intialize the y-axis point for the first ball.
 	float actualYPosition = -6f;
 	// Initialize the maximum y-axis point
-	float maximumYPosition = -4.5f;
+	float maximumYPosition = -4.75f;
 	// Initialize the movement variables for bubbleUp
 	public float MoveSpeed = 5.0f;
 	
@@ -39,8 +39,10 @@ public class WaterObject : MonoBehaviour {
 
 	// offset vertically to be below the water
 	private float offset;
+	public Collider[] colliders;
+	public float radius;
 	
-	// Speed for bubbling up the items
+	// Speed for bubbling up the balls
 	public float bubbleSpeed;
 
 	// number of floating ball
@@ -90,22 +92,12 @@ public class WaterObject : MonoBehaviour {
 
 	IEnumerator OnStart()
 	{
+		// get array of locations
+		Vector3[] ballLocations = ballPositions(numberOfInstantiatedBalls);
 		for (int i = 0; i < numberOfInstantiatedBalls; i++)
-		{
-			// Choose an x and z position at random
-			// Skillz Random
-			float actualXPosition = player.transform.position.x + UnityEngine.Random.Range(x_low_margin, x_high_margin);
-			float actualZPosition = player.transform.position.x + UnityEngine.Random.Range(z_low_margin, z_high_margin);
-
-			// intialize y value of the ball.
-			//float yPosition = -(((i + 1f) * numberOfInstantiatedBalls) / numberOfInstantiatedBalls);
-
-			// Determine the position of the ball from the previous calculations.
-			Vector3 place = new Vector3
-				(actualXPosition,
-					actualYPosition,
-					actualZPosition
-				);
+		{				
+			// Spawn the balls in random locations within the clamp
+			Vector3 place = ballLocations[i];
 
 			// Instantiate a ball and place it in the pre-determined position.
 			GameObject instantiatedBall = Instantiate(floating_ball, place, Quaternion.identity) as GameObject;
@@ -113,7 +105,7 @@ public class WaterObject : MonoBehaviour {
 			// Change the name of the ball in the hierarchy.
 			instantiatedBall.name = "Ball";
 			// Set the Default current color to the ball.
-			//instantiatedBall.transform.GetChild(0).GetComponentInChildren<Renderer>().material.color = currentColorBall;
+			instantiatedBall.transform.GetComponent<Renderer>().material.color = currentColorBall;
 
 			// Access the next element in the array.
 			instantiatedBalls[i + 1] = instantiatedBall;
@@ -121,16 +113,20 @@ public class WaterObject : MonoBehaviour {
 
 		yield return new WaitForSecondsRealtime(0.1f);
 
-		// Sliding the ball from up to down.
+		// Call a coroutine which is responsible for "bubbling" the ball up from under the water
 		for (int i = 1; i <= numberOfInstantiatedBalls; i++)
 		{
+			// set the ball state variables
+			BallState state = instantiatedBalls[i].GetComponent(typeof(BallState)) as BallState;
+			state.setMoving(true);
+
 			StartCoroutine(bubbleUp(instantiatedBalls[i]));
 		}
 	}
 
 	#endregion
 
-	#region Spawn balls and powers, and move them from up to down and horizontally
+	#region Spawn balls, and move them from down to up and horizontally
 
 	// will take the number of balls that could fit in the clamp e.g. 1-3
 	public void spawnBalls (int numBall)
@@ -164,15 +160,13 @@ public class WaterObject : MonoBehaviour {
 			ballsToSpawn[i].GetComponent<Renderer>().material.color = currentColorBall;
 			ballsToSpawn[i].SetActive(true);
 		}
-		// Call a coroutine which is responsible for moving the ball and the power from up to down.
+		// Call a coroutine which is responsible for "bubbling" the ball up from under the water
 		for (int i = 0; i < ballsToSpawn.Length; i++)
 		{
+			// set the ball state variables
 			BallState state = ballsToSpawn[i].GetComponent(typeof(BallState)) as BallState;
 			state.setMoving(true);
-		
-			// Reset frequency and magnitude
-			frequency = 0.001f;
-			magnitude = 0.028f;
+
 			StartCoroutine(bubbleUp(ballsToSpawn[i]));
 		}
 	
@@ -184,13 +178,12 @@ public class WaterObject : MonoBehaviour {
 		float relativeSpeed;
 		
 		BallState state = instantiatedBall.GetComponent(typeof(BallState)) as BallState;
+		state.setFrequency(frequency);
+		state.setMagnitude(magnitude);
+		float freq = state.getFrequency();
+		float mag = state.getMagnitude();
 		if (state.getMoving())
 		{
-			Debug.Log("Ball is moving, doing nothing.");
-			yield return null;
-		}else
-		{
-			
 			while (instantiatedBall != null && instantiatedBall.transform.position.y<= maximumYPosition)
 			{
 				// Change the speed according to the height of the ball.
@@ -205,10 +198,12 @@ public class WaterObject : MonoBehaviour {
 				yield return null;
 			}
 
-			while(instantiatedBall != null && magnitude > 0)
+			while(instantiatedBall != null && mag > 0)
 			{
+				freq = state.getFrequency();
+				mag = state.getMagnitude();
 				// Set the new y position based off the current			
-				float yPos = instantiatedBall.transform.position.y + Mathf.Sin (frequency) * magnitude;
+				float yPos = instantiatedBall.transform.position.y + Mathf.Cos (freq) * mag;
 
 				// Apply the new y position to the ball
 				instantiatedBall.transform.position = new Vector3(instantiatedBall.transform.position.x,
@@ -217,35 +212,26 @@ public class WaterObject : MonoBehaviour {
 				);
 
 				// Increase the frequency so the ball will change position next loop
-				frequency += 0.021f;
-				frequency += Mathf.Abs(2f * Mathf.PI);
+				//freq += 0.021f;
+				freq += 0.252f;
+				freq += Mathf.Abs(2f * Mathf.PI);
+				state.setFrequency(freq);
 				// Slowly decrease the magnitude till it drops below 0
-				magnitude -= 0.000035f;
+				//mag -= 0.000035f;
+				mag -= 0.00042f;
+				state.setMagnitude(mag);
 
 				yield return null;
 			}
 
 			// Ball has now stopped moving, set the state
 			state.setMoving(false);
+		}else
+		{
+			// Do nothing if the ball is not moving
+			yield return null;
 		}
 	}
-
-	IEnumerator spawnTimer()
- {
-     float elapsedTime = 0;
-	 while(!timeToSpawn)
-	 {
-         if(elapsedTime>maxBalls)
-         {
-             // do your action here or launch new action coroutine
-			 timeToSpawn = true;
-             break;
-         }
-         elapsedTime = Time.deltaTime;
-		 yield return null;
-         //yield return new WaitForSeconds(0.5f); // this means wait 1 frame, you could reduce the number of checks by cheking up every second or 0.5 s with yield return new WaitForSeconds(0.5f)
- 	}
- }
 
 	Vector3[] ballPositions(int numPositions)
 	{
@@ -254,13 +240,11 @@ public class WaterObject : MonoBehaviour {
 		Vector3[] positions = new Vector3[numPositions];
 		for (int i = 0; i < numPositions; i++)
 		{
+			bool canSpawnHere;
 			// Choose an x and z position at random
 			// Skillz Random
 			float actualXPosition = player.transform.position.x + UnityEngine.Random.Range(x_low_margin, x_high_margin);
 			float actualZPosition = player.transform.position.z + UnityEngine.Random.Range(z_low_margin, z_high_margin);
-
-			// intialize y value of the ball.
-			//float yPosition = (((i + 1f) * numberOfInstantiatedBalls) / numberOfInstantiatedBalls);
 
 			// Determine the position of the ball from the previous calculations.
 			Vector3 place = new Vector3
@@ -268,14 +252,36 @@ public class WaterObject : MonoBehaviour {
 				actualYPosition,
 				actualZPosition
 				);
+				canSpawnHere = PreventSpawnOverlap(place);
 			positions[i] = place;
 		}
 		return positions;
 	}
 
+	
+
+	bool PreventSpawnOverlap(Vector3 place)
+	{
+		// A method to prevent a ball from spawning inside of another ball
+		colliders = Physics.OverlapSphere(transform.position, radius);
+		for (int i=0; i < colliders.Length; i++){
+			Vector3 centerPoint = colliders[i].bounds.center;
+			float width = colliders[i].bounds.extents.x;
+			float length = colliders[i].bounds.extents.z;
+
+			float leftExtent = centerPoint.x - width;
+			float rightExtent = centerPoint.x + width;
+			float lowerExtent = centerPoint.z - length;
+			float upperExtent = centerPoint.z + length;
+
+			
+		}
+		return true;
+	}
+
 	#endregion
 
-		#region Colors' functions
+	#region Colors' functions
 
 	void changeColor()
 	{
@@ -314,6 +320,30 @@ public class WaterObject : MonoBehaviour {
 
 	#endregion
 
+	#region Helpers
+
+	public GameObject findClosestBall(GameObject currentBall)
+	{
+		GameObject[] balls;
+		balls = GameObject.FindGameObjectsWithTag("Ball");
+		GameObject closest = null;
+		float distance = Mathf.Infinity;
+		Vector3 position = currentBall.transform.position;
+
+		foreach (GameObject b in balls)
+		{
+			float diff = b.transform.position.z - position.z;
+			if (Mathf.Abs(diff) < distance)
+			{
+				closest = b;
+				distance = Mathf.Abs(diff);
+			}
+		}
+		return closest;
+	}
+
+	#endregion
+
 	
 
 	#region Collision function to enqueue the ball
@@ -344,13 +374,8 @@ public class WaterObject : MonoBehaviour {
 			// Spawn cubes if interval has passed
 			if (totalBalls < maxBalls)
 			{
-				//timeToSpawn = false;
-				// Skillz Random
-				// DEBUG // Jake -- switch back to 1, 3
-				int spawnRandomBalls = UnityEngine.Random.Range(3, 3);
-				// Call "spawnCubes" function to spawn some number of new cubes.
-				spawnBalls(spawnRandomBalls);
-				//StartCoroutine(spawnTimer());
+				// Call "spawnBalls" function to spawn some 1 new ball.
+				spawnBalls(1);
 			}
 		}
 	}

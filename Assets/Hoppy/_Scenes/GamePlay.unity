@@ -557,6 +557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moving: 0
+  cubeLaunchHeight: 0
 --- !u!65 &495741527
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5743,6 +5744,10 @@ MonoBehaviour:
   - {r: 1, g: 0.90476185, b: 0.75, a: 1}
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 0.95045114, g: 0.9811321, b: 0, a: 1}
+  jumpHeights:
+  - 2
+  - 6
+  - 12
   uiController: {fileID: 1530382542}
   blackMaterial: {fileID: 2100000, guid: fdca0da1b69ece24ba2bc506085a3474, type: 2}
   whiteMaterial: {fileID: 2100000, guid: b4e9e460c7488eb48bcb32d3789480e4, type: 2}
@@ -11201,6 +11206,10 @@ MonoBehaviour:
   - {fileID: 1153169395137482, guid: d08a72821ea019b4f9b8fe5004fc8faf, type: 2}
   - {fileID: 1654866967740610, guid: 6ae8f13f5da4b9946b35c49a92085cb4, type: 2}
   - {fileID: 1338451662300036, guid: 918362d6257c85d4bbcc1107add03b89, type: 2}
+  floatingItemHeights:
+  - 7
+  - 9
+  - 11
   currentColor: {r: 0.098039225, g: 0.94117653, b: 0.38431376, a: 1}
   colorsOfTheCube:
   - {r: 1, g: 0.09019608, b: 0.16862746, a: 1}
@@ -11218,6 +11227,7 @@ MonoBehaviour:
   lengthOfTheCubes: 4
   player: {fileID: 838441949}
   playerController: {fileID: 838441954}
+  numberCubeLaunchHeights: 3
   environment: {fileID: 704759717}
 --- !u!65 &1410692904
 BoxCollider:
@@ -11245,7 +11255,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1410692902}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -9}
+  m_LocalPosition: {x: 0, y: 0, z: -11}
   m_LocalScale: {x: 30, y: 30, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -12034,7 +12044,9 @@ MonoBehaviour:
   x_low_margin: -7
   z_high_margin: 38
   z_low_margin: -5
-  bubbleSpeed: 4
+  colliders: []
+  radius: 0
+  bubbleSpeed: 5
   numberOfInstantiatedBalls: 12
   floating_ball: {fileID: 1224389724699254, guid: 9e55f409edf6f9d488fbf7570d5424a4,
     type: 2}

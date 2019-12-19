@@ -33,7 +33,9 @@ public class PlayerController : MonoBehaviour {
 	// Jump distance in Z Axis.
 	private float jumpDistance = 4f;
 	// Jump Height in Y Axis.
-	private float jumpHeight = 2.0f;
+	private float defaultJumpHeight = 2.0f;
+  // Array of available jump heights
+  public float[] jumpHeights;
 	// Minimum gravity -> minimum speed.
 	private float minGravity = -35;
 	// Maximum gravity -> maximum speed.
@@ -216,8 +218,13 @@ public class PlayerController : MonoBehaviour {
           updateScore(platformScore);
           // play sound
           playSound();
+          // Get the cube's jump height
+          
+          // Set the launch height of the cube state
+          CubeState state = col.gameObject.GetComponent(typeof(CubeState)) as CubeState; 
+          int jumpHeight = state.getCubeLaunchHeight();
           // Make the player jump
-          jump(col.gameObject);
+          jump(col.gameObject, jumpHeight);
             
           // Show floating text
           uiController.ShowFloatingText(col.gameObject, platformScore.ToString(), itemColors[3]);
@@ -294,7 +301,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    void jump(GameObject go)
+    void jump(GameObject go, int cubeLaunchHeight)
     {
       // Default Y position if the Player is touching the top of a Cube.
       float defultYPos = GetComponent<Collider>().bounds.size.y / 2 + go.gameObject.GetComponent<Collider>().bounds.size.y / 2;
@@ -322,12 +329,17 @@ public class PlayerController : MonoBehaviour {
 // Get the current gravity value.
       float g = Physics.gravity.magnitude;
 
-// Calculate the total time required to jump with specific Height.
-      float totalTime = Mathf.Sqrt(jumpHeight * 7 / g);
+      // Calculate the total time required to jump with specific Height.
+      float totalTime;
+      if(jumpHeights[cubeLaunchHeight] == null){
+        totalTime = Mathf.Sqrt(defaultJumpHeight * 7 / g);
+      }else{
+        totalTime = Mathf.Sqrt(jumpHeights[cubeLaunchHeight] * 7 / g);
+      }
 
-// Calculate the vertical speed required to jump with specific Height.
+      // Calculate the vertical speed required to jump with specific Height.
       float vSpeed = totalTime * g / 2;
-// Calculate the forward speed required to jump specific Distance.
+      // Calculate the forward speed required to jump specific Distance.
       float fSpeed = jumpDistance / totalTime;
 
 
@@ -365,7 +377,7 @@ public class PlayerController : MonoBehaviour {
       float g = Physics.gravity.magnitude;
 
 // Calculate the total time required to jump with specific Height.
-      float totalTime = Mathf.Sqrt(jumpHeight * 7 / g);
+      float totalTime = Mathf.Sqrt(defaultJumpHeight * 7 / g);
 
 // Calculate the vertical speed required to jump with specific Height.
       float vSpeed = totalTime * g / 2;
@@ -512,8 +524,12 @@ public class PlayerController : MonoBehaviour {
   }
   void useShield()
   {
+    // Set the launch height of the cube state
+    GameObject c = findClosestCube();
+    CubeState state = c.GetComponent(typeof(CubeState)) as CubeState; 
+    int jumpHeight = state.getCubeLaunchHeight();
     // Make the player jump "off" of closest cube z position
-    jump(findClosestCube());
+    jump(c,jumpHeight);
     // Instantiate Gem Explosion in the same position of the picked Gem.
     GameObject shieldExplosionObject = Instantiate(shieldExplosion, new Vector3(transform.position.x,(transform.position.y - GetComponent<Collider>().bounds.size.y / 2), transform.position.z), shieldExplosion.transform.rotation) as GameObject;
 

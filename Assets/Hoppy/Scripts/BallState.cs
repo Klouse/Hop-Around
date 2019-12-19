@@ -13,6 +13,14 @@ public class BallState : MonoBehaviour {
 	public IEnumerator movementCoroutine;
 	public bool moving = false;
 
+	// frequency and magnitude
+	float frequency;
+	float magnitude;
+
+	#endregion
+
+	#region Getters & Setters
+
 	public void setMoving(bool move)
 	{
 		moving = move;
@@ -31,6 +39,26 @@ public class BallState : MonoBehaviour {
 	public IEnumerator getMoveCoroutine()
 	{
 		return movementCoroutine;
+	}
+
+	public void setFrequency(float freq)
+	{
+		frequency = freq;
+	}
+
+	public float getFrequency()
+	{
+		return frequency;
+	}
+
+	public void setMagnitude(float mag)
+	{
+		magnitude = mag;
+	}
+
+	public float getMagnitude()
+	{
+		return magnitude;
 	}
 
 	#endregion

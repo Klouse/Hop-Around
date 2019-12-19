@@ -10,24 +10,30 @@ public class CubeController : MonoBehaviour {
 
 	#region Variables Declaration & Initialization
 
+	//// CUBES ////
 	// A reference to the game play cube.
 	public GameObject cube;
 	// The number of the cubes that will appear on the scene.
 	public int numberOfInstantiatedCubes;
-
 	// Array of the cubes
 	private GameObject[] instantiatedCubes;
-	// Queue of coroutines
-	Queue<IEnumerator> movements = new Queue<IEnumerator>();
-
+	// Float of the base y position for the cubes
+	private float cubeBaseYPosition = 5.0f;
+	
+	//// ITEMS ////
 	// A reference to the items game object.
 	public GameObject[] items;
 	// List of items
 	private List<GameObject> listOfItems = new List<GameObject>();
 	// Dictionary of all obtainable items and if they are active
 	private Dictionary<string, bool> itemState = new Dictionary<string, bool>();
+	// Initialize the z-axis point for items
+	float itemZPosition;
+	// Initialize the y positions for the floating items
+	public float[] floatingItemHeights;
 
-	// Color of the cubes.
+	//// COLORS ////
+	//Color of the cubes.
 	public Color currentColor;
 	// Array of the colors for the cubes.
 	public Color[] colorsOfTheCube;
@@ -35,12 +41,18 @@ public class CubeController : MonoBehaviour {
 	public float colorMultiplier;
 	// color modifier
 	public float colorModifier;
+	// List of the colors.
+	private List<Color> colorsList;
+	// Intialize the counter that is used to change the color of the cubes.
+	private int counterForSpawnCubes = 1;
 
+	//// MOVEMENT ////
+	// Queue of coroutines
+	Queue<IEnumerator> movements = new Queue<IEnumerator>();
 	// Speed for moving the cube horizontally.
 	public float horizontalSpeed;
 	// Speed for sliding the cube from up to down.
 	public float slidingSpeed;
-
 	// Margin.
 	public float margin;
 	// Array of the values to be used in the x positions.
@@ -49,27 +61,25 @@ public class CubeController : MonoBehaviour {
 	public int lengthOfTheCubes;
 	// Intialize the z-axis point for the first cube.
 	float actualZPosition = 0.0f;
-	// Initialize the z-axis point for items
-	float itemZPosition;
 	// Initialize the row counter
 	int row = 0;
-	// List of the colors.
-	private List<Color> colorsList;
-	// Intialize the counter that is used to change the color of the cubes.
-	private int counterForSpawnCubes = 1;
-
+	// Initialize the index for the first row when powerups can occur
+	int dynamicRowStartIndex = 5;
 	// A random variable to decide if the cubes will be moved horizontally or not.
 	private int randomForMovingTheCubeInXaxis;
 
+	//// PLAYER ////
 	// A reference to a player game object.
 	public GameObject player;
 	// A reference to the player controller script
 	public PlayerController playerController;
 	// A float number which is used to keep the displacement between this game object and the the player constant.
 	private float offset;
+	// An array of jump height modifiers available for a cube
+	public int numberCubeLaunchHeights;
 
 
-	// Section for Environment
+	//// ENVIRONMENT ////
 	public GameObject environment;
 
 	#endregion
@@ -223,7 +233,14 @@ public class CubeController : MonoBehaviour {
 				cubesToSpawn[i].name = "newCube";
 			}else{
 				cubesToSpawn[i].name = "skipCube";
+			
 			}
+			// Pick the random launch height for the cube
+			int pickedLaunchHeight = launchHeightPick();
+			// Set the launch height of the cube state
+			CubeState state = cubesToSpawn[i].GetComponent(typeof(CubeState)) as CubeState; 
+			state.setCubeLaunchHeight(pickedLaunchHeight);
+
 			// Set the Default current color to the cube.
 			cubesToSpawn[i].transform.GetChild(0).GetComponentInChildren<Renderer>().material.color = currentColor;
 			cubesToSpawn[i].SetActive(true);
@@ -270,8 +287,7 @@ public class CubeController : MonoBehaviour {
 		float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
 		Vector3 place = new Vector3
 			(actualXPosition,
-			// height of cubes hard coded
-				5.0f,
+				cubeBaseYPosition,
 				actualZPosition
 			);
 			return place;
@@ -304,7 +320,7 @@ public class CubeController : MonoBehaviour {
 			// Determine the position of the cube from the previous calculations.
 			Vector3 place = new Vector3
 				(actualXPosition,
-					5.0f,
+					cubeBaseYPosition,
 					actualZPosition
 				);
 			positions[i] = place;
@@ -354,7 +370,7 @@ public class CubeController : MonoBehaviour {
 			// Skillz Random
 			randomForMovingTheCubeInXaxis = UnityEngine.Random.Range(0, 9);
 			CubeState state = instantiatedCube.GetComponent(typeof(CubeState)) as CubeState;
-			if (randomForMovingTheCubeInXaxis >= 8 & row > 5)
+			if (randomForMovingTheCubeInXaxis >= 8 & row > dynamicRowStartIndex)
 			{
 				state.setMoving(true);
 				IEnumerator coroutine = moveCube(instantiatedCube, instantiatedCube.transform.position.x, instantiatedCube.transform.position.z);
@@ -392,11 +408,10 @@ public class CubeController : MonoBehaviour {
 	#region item
 	GameObject itemPick()
 	{
-		// Pick an item in the list
+		// Pick an item from the list
 		// Skillz random
 		int randomItem = UnityEngine.Random.Range(0, listOfItems.Count);
-		GameObject g;
-		g = listOfItems[randomItem];
+		GameObject g = listOfItems[randomItem];
 		// if power is active on player, or item is active for pickup, don't spawn it
 		if (playerController.isPowerActive(g.tag) == true || itemState[g.tag] == true)
 		{
@@ -422,7 +437,7 @@ public class CubeController : MonoBehaviour {
 		//Debug.Log("Setting " + g.tag + " inactive");
 	}
 
-	Vector3 placeFloatingItem()
+	Vector3 placeFloatingItem(int height = 0)
 	{
 		// Adjust  the position for a floating item that will be spawned.
 		// Currently just used for the floating ring
@@ -431,7 +446,8 @@ public class CubeController : MonoBehaviour {
 		int randomSelectionForXPosition = UnityEngine.Random.Range(0, xPositions.Length);
 		float currentXPosition = xPositions[randomSelectionForXPosition];
 		float actualXPosition = currentXPosition + UnityEngine.Random.Range(-margin, margin);
-		float actualYPosition = 7.0f;
+		//float actualYPosition = 7.0f;
+		float actualYPosition = floatingItemHeights[height];
 		Vector3 place = new Vector3
 			(actualXPosition,
 				actualYPosition,
@@ -439,6 +455,22 @@ public class CubeController : MonoBehaviour {
 			);
 		return place;
 	}
+		// Pick a random part of the array height
+	int launchHeightPick()
+	{
+		int randomHeight;
+		if(row > dynamicRowStartIndex){
+			// Pick an height from the array
+			// Skillz random
+			randomHeight = UnityEngine.Random.Range(0, numberCubeLaunchHeights);
+		}else{
+			randomHeight = 0;
+		}
+
+		// Return int of height modifier
+		return randomHeight;
+	}
+
 	#endregion
 
 
@@ -521,7 +553,7 @@ public class CubeController : MonoBehaviour {
 			}
 			// Skillz Random
 			// DEBUG // Jake -- switch back to 1, 3
-			int spawnRandomCubes = UnityEngine.Random.Range(1, 3);
+			int spawnRandomCubes = UnityEngine.Random.Range(3, 3);
 			// Call "spawnCubes" function to spawn some number of new cubes.
 			if (other.gameObject.name == "Cube")
 			{
